@@ -1,3 +1,13 @@
+String.prototype.format = function() {
+    var args = arguments;
+    return this.replace(/{(\d+)}/g, function(match, number) {
+        return typeof args[number] != 'undefined'
+            ? args[number]
+            : match
+        ;
+    });
+};
+
 function updateStation(data)
 {
     var list = $("#bus_stops");
@@ -36,9 +46,12 @@ function showForecast(url,options)
             // Generate a list item for each item in the category
             // and add it to our markup.
             for ( var i = 0, vehicle; vehicle = vehicles[i]; i++ ) {
-                markup += "<li>" + vehicle.route_num + ' ' + vehicle.route_type +
-                    '→ '+vehicle.where_go + ' через ' + Math.round(vehicle.arr_time / 60,2) + ' мин.'
-                    "</li>";
+                markup += '<li><img src="img/{0}.png" alt="{1}" class="ui-li-icon">{1} <span class="ui-li-count">{2}</span></li>'
+                    .format(
+                        vehicle.route_type,
+                        '{0} → {1}'.format(vehicle.route_num, vehicle.where_go),
+                        Math.round(vehicle.arr_time / 60,2) + ' мин.'
+                    );
             }
             markup += "</ul>";
 
@@ -60,10 +73,12 @@ function showForecast(url,options)
             // so set the dataUrl option to the URL for the category
             // we just loaded.
             options.dataUrl = url;
-
             // Now call changePage() and tell it to switch to
             // the page we just modified.
+
             $.mobile.changePage( $page, options );
+            $page.attr('data-url',url);
+            $.mobile.loading('hide');
         }
     },'json');
 }
@@ -77,6 +92,10 @@ $('#search-station').live('change',function(event,ui){
         },updateStation,'json');
     }
 
+});
+$('#forecast .refresh').bind('click',function(event,ui){
+    $.mobile.loading( 'show' );
+    $.mobile.changePage($('#forecast').attr('data-url'));
 });
 
 if (navigator.geolocation)
@@ -134,7 +153,7 @@ $(document).bind( "pagebeforechange", function( e, data ) {
 			// We're being asked to display the items for a specific category.
 			// Call our internal method that builds the content for the category
 			// on the fly based on our in-memory category data structure.
-			showForecast( u.href, data.options );
+			showForecast( u.pathname + u.search, data.options );
 
 			// Make sure to tell changePage() we've handled this call so it doesn't
 			// have to do anything.
