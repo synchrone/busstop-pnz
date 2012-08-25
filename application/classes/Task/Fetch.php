@@ -88,7 +88,7 @@ class Task_Fetch extends Minion_Task
                 $current_heading = 0;
                 $i = 0;
             }
-            $cache->set('stations',$stations,3600 * 24);
+            $cache->set('stations',$stations,3600 * 24 * 30);
         }
         //TODO: use MongoDB for storing stations
         file_put_contents(DOCROOT.'js/stations.json',json_encode($stations));
