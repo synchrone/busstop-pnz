@@ -14,11 +14,13 @@
 <div id="main_page" data-role="page">
 
 	<div data-role="header">
-		<h1>Остановка</h1>
+		<h1>Остановки</h1>
+        <a href="#about" data-role="button" data-icon="info"
+           data-theme="b" class="ui-btn-right info-button" data-rel="dialog">info</a>
 	</div>
 
 	<div data-role="content">
-        <input type="search" id="search-station" onchange="searchStop(this.value)" value=""/>
+        <input type="search" id="search-station" value=""/>
 
         <ul id="bus_stops" data-role='listview' data-inset='true'>
 
@@ -34,6 +36,19 @@
     </div>
     <div data-role="content"></div>
 </div>
+
+<div id="about" data-role="page">
+    <div data-role="header">
+        <h1>Info</h1>
+    </div>
+    <div data-role="content">
+        <div data-role="collapsible" class="geo-debug" data-collapsed="true">
+            <h3>Geo-info</h3>
+            <p>No Geo-info available</p>
+        </div>
+    </div>
+</div>
+
 
 <script src='/js/main.js'></script>
 </body>

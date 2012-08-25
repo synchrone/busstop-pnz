@@ -4,16 +4,22 @@
  */
 class Task_Fetch extends Minion_Task
 {
+    protected  $_options = array(
+        'cache'=>'true'
+    );
     const BASE_URL = 'http://bus62.ru/penza/php/';
     public function _execute(array $params)
     {
         $cache = Cache::instance();
 
-        if(!($routes = $cache->get('routes')))
+        if($params['cache'] !== 'true' || !($routes = $cache->get('routes')))
         {
+            Minion_CLI::write('Fetching routes...');
+            /** @var $json_routes Request_Client */
             $json_routes = Request::factory(self::BASE_URL.'searchAllRoutes.php')
                 ->query('city','penza')
-                ->execute()->body();
+                ->execute()
+            ->body();
 
             $json_routes = json_decode($json_routes);
             $routes = array();
@@ -33,12 +39,13 @@ class Task_Fetch extends Minion_Task
             $cache->set('routes',$routes);
         }
 
-        if(!($stations = $cache->get('stations')))
+        if($params['cache'] !== 'true' || !($stations = $cache->get('stations')))
         {
             $stations = array();
 
             foreach($routes as $route)
             {
+                Minion_CLI::write('Fetching stations for route '.$route['formal_name'].'...');
                 $xml_stations_body = Request::factory(
                     sprintf(self::BASE_URL.'getRouteStations.php')
                 )
@@ -58,21 +65,32 @@ class Task_Fetch extends Minion_Task
                     return;
                 }
 
+                $headings = array(null);
+                $current_heading = 0;
+                $i = 0;
+
                 foreach($xml_stations->children() as /** @var  $station_xml SimpleXMLElement */ $station_xml)
                 {
                     $station_xml = (array)$station_xml;
                     $station_xml = $station_xml['@attributes'];
-                    unset($station_xml['descr']);
-                    unset($station_xml['lon1']);
-                    unset($station_xml['lat1']);
-                    unset($station_xml['end']);
+                    $station_xml['heading'] = &$headings[$current_heading];
 
-
+                    if(Arr::get($station_xml,'end',0) == 1)
+                    {
+                        $headings[$current_heading] = $station_xml['name']; //setting back-linked heading
+                        $headings[] = null; //adding new empty heading
+                        $current_heading = count($headings)-1;
+                        Minion_CLI::write('Set heading for previous stops '.$station_xml['name']);
+                    }
                     $stations[$station_xml['id']] = $station_xml;
                 }
+                $headings = array(null);
+                $current_heading = 0;
+                $i = 0;
             }
             $cache->set('stations',$stations,3600 * 24);
         }
-        file_put_contents(DOCROOT.'www/js/stations.json',json_encode($stations));
+        //TODO: use MongoDB for storing stations
+        file_put_contents(DOCROOT.'js/stations.json',json_encode($stations));
     }
 }

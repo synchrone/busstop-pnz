@@ -10,7 +10,7 @@ function updateStation(data)
                     $.param({id:station.id, type: station.type})
                 )
                 .data('station_name',station.name)
-                .text(station.name)
+                .text(station.name + ' (→'+station.heading+')')
                 .click(function(e){
                     $('#forecast').find('h1').text($(this).data().station_name)
                 })
@@ -37,7 +37,7 @@ function showForecast(url,options)
             // and add it to our markup.
             for ( var i = 0, vehicle; vehicle = vehicles[i]; i++ ) {
                 markup += "<li>" + vehicle.route_num + ' ' + vehicle.route_type +
-                    '&rarr;'+vehicle.where_go + ' через ' + Math.round(vehicle.arr_time / 60,2) + ' мин.'
+                    '→ '+vehicle.where_go + ' через ' + Math.round(vehicle.arr_time / 60,2) + ' мин.'
                     "</li>";
             }
             markup += "</ul>";
@@ -68,12 +68,16 @@ function showForecast(url,options)
     },'json');
 }
 
-function searchStop(q){
-    $.get('/search_stations',{
-        q:q
-    },updateStation,'json');
-}
 
+$('#search-station').live('change',function(event,ui){
+    var text = $(this).val();
+    if(text != ''){
+        $.get('/search_stations',{
+            q:text
+        },updateStation,'json');
+    }
+
+});
 
 if (navigator.geolocation)
 {
@@ -81,7 +85,7 @@ if (navigator.geolocation)
         function(position)
         {
             var c = position.coords;
-            if(c.accuracy < 500){
+            if(c.accuracy < 1500){
                 $.get('/nearest_stations',{
                     lat:c.latitude,
                     lon:c.longitude,
@@ -93,8 +97,28 @@ if (navigator.geolocation)
         {
             console.log(error);
         },
-        {enableHighAccuracy:false,timeout:30000,maximumAge:600000}
+        {enableHighAccuracy:true,timeout:30000,maximumAge:10000}
     );
+
+    $( ".geo-debug").bind('expand',function(event, ui)
+    {
+        var geo_debug = $(this).find('p');
+        navigator.geolocation.getCurrentPosition(function(position)
+            {
+                var c = position.coords;
+                geo_debug.html(
+                      '<p>Latitude: ' + c.latitude + '</p>'
+                    + '<p>Longitude: ' + c.longitude + '</p>'
+                    + '<p>Accuracy: ' + c.accuracy + '</p>'
+                    + '<p>Altitude: ' + c.altitude + '</p>'
+                    + '<p>Altitude accuracy: ' + c.altitudeAccuracy + '</p>'
+                    + '<p>Speed: ' + c.speed + '</p>'
+                    + '<p>Heading: ' + c.heading + '</p>'
+                    + '<p>Timestamp: ' + position.timestamp + '</p>'
+                );
+            },null,{enableHighAccuracy:true,timeout:30000,maximumAge:10000}
+        );
+    });
 }
 
 // Listen for any attempts to call changePage().

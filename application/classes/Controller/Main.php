@@ -2,6 +2,7 @@
 
 class Controller_Main extends Controller {
 
+    //TODO: Variable search radius depending on accuracy
     static $radius = 0.37;
 
     public function before(){
@@ -19,10 +20,11 @@ class Controller_Main extends Controller {
 
         $found_stations = array_map(function($station)
         {
-            return UTF8::strpos(
-                strtolower($station['name']),
-                strtolower(Request::current()->query('q'))
-            ) !== false ? $station : null;
+            return (
+                UTF8::strpos(UTF8::strtolower($station['name']),
+                    Request::current()->query('q')
+                ) !== false
+            ) ? $station : null;
         },$stations);
 
         $found_stations = array_values(array_filter($found_stations));
@@ -31,28 +33,24 @@ class Controller_Main extends Controller {
 
 	public function action_nearest_stations()
 	{
-        $r = Request::current();
         $c = Cache::instance();
 
-		$lat = (float)$r->query('lat');
-        $lon = (float)$r->query('lon');
-        $accuracy = $r->query('accuracy'); //meters
-        $stations = $c->get('stations');
-
-        $loc = array_fill(0,count($stations),array('lat'=>$lat,'lon'=>$lon));
-
-        $near_stations = array_map(function($station,$loc)
+        //$accuracy = Request::current()->query('accuracy'); //meters
+        $near_stations = array_values(array_filter(array_map(function($station)
         {
+            $r = Request::current();
+            $loc = array('lat'=>(float)$r->query('lat'),'lon'=>(float)$r->query('lon'));
+
             $station['lat0'] = $this->defuckify($station['lat0']);
             $station['lon0'] = $this->defuckify($station['lon0']);
 
+            //TODO: the earth is not a sphere, so this zone would be an oval
             $inside = sqrt(
                 sqrt(abs($station['lat0']-$loc['lat'])) + sqrt(abs($station['lon0']-$loc['lon']))
             ) <= self::$radius;
 
             return $inside ? $station : null;
-        },$stations,$loc);
-        $near_stations = array_values(array_filter($near_stations));
+        },$c->get('stations'))));
 
         $this->response->body(json_encode($near_stations));
     }
