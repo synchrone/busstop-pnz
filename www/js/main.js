@@ -91,7 +91,6 @@ $('#search-station').live('input',function(event,ui){
     }
     var that = this;
     this.searchTimeout = setTimeout(function(){
-        console.log(that);
         var text = $(that).val();
         if(text != ''){
             $.get('/search_stations',{
