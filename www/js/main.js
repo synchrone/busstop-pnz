@@ -84,15 +84,23 @@ function showForecast(url,options)
 }
 
 
-$('#search-station').live('change',function(event,ui){
-    var text = $(this).val();
-    if(text != ''){
-        $.get('/search_stations',{
-            q:text
-        },updateStation,'json');
+$('#search-station').live('input',function(event,ui){
+    if(typeof this.searchTimeout != 'undefined'){
+        clearTimeout(this.searchTimeout);
+        delete this.searchTimeout;
     }
-
+    var that = this;
+    this.searchTimeout = setTimeout(function(){
+        console.log(that);
+        var text = $(that).val();
+        if(text != ''){
+            $.get('/search_stations',{
+                q:text
+            },updateStation,'json');
+        }
+    },$(this).data().timeout);
 });
+
 $('#forecast .refresh').bind('click',function(event,ui){
     $.mobile.loading( 'show' );
     $.mobile.changePage($('#forecast').attr('data-url'));
@@ -125,16 +133,15 @@ if (navigator.geolocation)
         navigator.geolocation.getCurrentPosition(function(position)
             {
                 var c = position.coords;
-                geo_debug.html(
-                      '<p>Latitude: ' + c.latitude + '</p>'
-                    + '<p>Longitude: ' + c.longitude + '</p>'
-                    + '<p>Accuracy: ' + c.accuracy + '</p>'
-                    + '<p>Altitude: ' + c.altitude + '</p>'
-                    + '<p>Altitude accuracy: ' + c.altitudeAccuracy + '</p>'
-                    + '<p>Speed: ' + c.speed + '</p>'
-                    + '<p>Heading: ' + c.heading + '</p>'
-                    + '<p>Timestamp: ' + position.timestamp + '</p>'
-                );
+                var text = '<p>Широта: ' + c.latitude + '</p>'
+                         + '<p>Долгота: ' + c.longitude + '</p>';
+                text += c.accuracy ? '<p>Точность: ±' + c.accuracy + ' метров</p>' : '';
+                text += c.altitude ? '<p>Высота: ' + c.altitude + '</p>' : '';
+                text += c.altitudeAccuracy ? '<p>Точность высоты: ±' + c.altitudeAccuracy + ' метров</p>' : '';
+                text += c.speed ? '<p>Скорость: ' + c.speed + '</p>' : '';
+                text += c.heading ? '<p>Направление: ' + c.heading + '</p>' : '';
+                text += c.timestamp ? '<p>Последнее определение: ' + new Date(position.timestamp).toString() + '</p>' : '';
+                geo_debug.html(text);
             },null,{enableHighAccuracy:true,timeout:30000,maximumAge:10000}
         );
     });
