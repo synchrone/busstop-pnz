@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Надоело стоять на остановке и не знать, когда будет транспорт? Дружественный к мобильным устройствам whenbus.ru подскажет!" />
-    <link rel="apple-touch-icon" href="/img/iphone-icon.gif" />
+    <link rel="apple-touch-icon" href="/img/iphone-icon.png" />
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0-alpha.1/jquery.mobile-1.2.0-alpha.1.min.css" />
     <link rel="stylesheet" href="/css/style.css" />
 	<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
