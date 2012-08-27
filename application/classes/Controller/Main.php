@@ -22,7 +22,7 @@ class Controller_Main extends Controller {
         {
             return (
                 UTF8::strpos(UTF8::strtolower($station['name']),
-                    Request::current()->query('q')
+                    UTF8::strtolower(Request::current()->query('q'))
                 ) !== false
             ) ? $station : null;
         },$stations);
