@@ -2,6 +2,8 @@
 
 class Controller_Main extends Controller {
 
+    const CITY = 'penza';
+
     //TODO: Variable search radius depending on accuracy
     static $radius = 0.37;
 
@@ -56,14 +58,8 @@ class Controller_Main extends Controller {
     }
 
     public function action_forecast(){
-        $forecast = Request::factory(Task_Fetch::BASE_URL.'getStationForecasts.php')
-                    ->query(Request::current()->query() + array('city'=>'penza'))
-                    ->execute();
-
-        /** @var $forecast_xml SimpleXMLElement */
-        $forecast_xml = simplexml_load_string($forecast);
         $forecast = array();
-        foreach($forecast_xml->children() as $vehicle){
+        foreach(self::get_forecast_xml(Request::current()->query())->children() as $vehicle){
             $vehicle= (array)$vehicle;
             $forecast[] = $vehicle['@attributes'];
         }
@@ -75,6 +71,24 @@ class Controller_Main extends Controller {
             ->headers('Content-Type','text/html')
             ->body(View::factory('index')
         );
+    }
+
+    public static function get_forecast_xml(array $query){
+        /** @var $forecast Response */
+        $forecast = Request::factory(Task_Fetch::BASE_URL.'getStationForecasts.php')
+                    ->query($query + array('city'=>self::CITY))
+                    ->execute();
+
+        if($forecast->status() !== 200){
+            throw HTTP_Exception::factory($forecast->status(),$forecast->body());
+        }
+
+        /** @var $forecast_xml SimpleXMLElement */
+        $forecast_xml = simplexml_load_string($forecast->body());
+        if($forecast_xml === false){
+            throw new Kohana_Exception('Cannot parse forecast response for '.http_build_query($query));
+        }
+        return $forecast_xml;
     }
 
 } // End Welcome
