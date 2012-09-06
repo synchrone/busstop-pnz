@@ -7,7 +7,7 @@ class Task_Fetch extends Minion_Task
     protected  $_options = array(
         'cache'=>'true'
     );
-    const BASE_URL = 'http://bus62.ru/penza/php/';
+    const BASE_URL = 'http://83.222.106.126/php/';
     public function _execute(array $params)
     {
         $cache = Cache::instance();

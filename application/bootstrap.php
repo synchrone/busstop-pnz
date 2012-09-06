@@ -72,7 +72,7 @@ Cookie::$salt = 'lol';
  */
 if (isset($_SERVER['KOHANA_ENV']))
 {
-	Kohana::$environment = constant('Kohana::'.strtoupper($_SERVER['KOHANA_ENV']));
+	Kohana::$environment = constant('Kohana::'.strtoupper(Arr::get($_SERVER,'KOHANA_ENV','production')));
 }
 
 /**
