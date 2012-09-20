@@ -5,7 +5,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Надоело стоять на остановке и не знать, когда будет транспорт? Дружественный к мобильным устройствам whenbus.ru подскажет!" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link rel="apple-touch-startup-image" href="/img/startup.jpg">
     <link rel="apple-touch-icon" href="/img/iphone-icon.png" />
+
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0-alpha.1/jquery.mobile-1.2.0-alpha.1.min.css" />
     <link rel="stylesheet" href="/css/style.css" />
 	<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
@@ -28,6 +33,10 @@
         <ul id="bus_stops" data-role='listview' data-inset='true'>
 
         </ul>
+
+        <div id="standalone-ad" class="ui-body ui-body-e" style="display:none;">
+            <p>Нажмите <nobr><img src="/img/ios_share_btn.png" style="height:16px"/>&rarr;Добавить в Домой,</nobr> чтобы закрепить ярлык на главном экране</p>
+        </div>
 	</div>
 </div>
 

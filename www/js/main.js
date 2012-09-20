@@ -100,10 +100,14 @@ $('#search-station').live('input',function(event,ui){
     },$(this).data().timeout);
 });
 
-$('#forecast .refresh').bind('click',function(event,ui){
+$('#forecast').find('.refresh').bind('click',function(event,ui){
     $.mobile.loading( 'show' );
     $.mobile.changePage($('#forecast').attr('data-url'));
 });
+
+if(typeof window.navigator.standalone != 'undefined' && !window.navigator.standalone){ //iphone and !standalone
+    $('#standalone-ad').show();
+}
 
 if (navigator.geolocation)
 {
