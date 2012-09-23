@@ -62,7 +62,7 @@ class Model_DidYouMean
      */
     public function fix($query)
     {
-        if(count($this->lib) == 0){return $query;}
+        if(count($this->lib) == 0){return null;}
 
         $fixed_query = $query;
         foreach(Text::split_words($query) as $word)
