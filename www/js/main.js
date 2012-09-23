@@ -10,9 +10,15 @@ String.prototype.format = function() {
 
 function updateStation(data)
 {
+    if(data.fixed_query){
+        $('#didyoumean').show().find('.fixed').html(data.fixed_query);
+    }else{
+        $('#didyoumean').hide();
+    }
+
     var list = $("#bus_stops");
     list.empty();
-    for (var i = 0, station; station = data[i]; ++i)
+    for (var i = 0, station; station = data.stations[i]; ++i)
     {
         list.append(
             $('<li></li>').append(

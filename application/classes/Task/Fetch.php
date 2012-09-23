@@ -88,6 +88,12 @@ class Task_Fetch extends Minion_Task
                 $current_heading = 0;
                 $i = 0;
             }
+            $stations = array_map(function($station){
+                Model_DidYouMean::instance()->learn($station['name']);
+                return Model_Station::factory($station);
+            },$stations);
+            Model_DidYouMean::instance()->save();
+
             $cache->set('stations',$stations,3600 * 24 * 30);
         }
         //TODO: use MongoDB for storing stations

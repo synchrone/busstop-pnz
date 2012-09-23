@@ -29,6 +29,9 @@
 
 	<div data-role="content">
         <input type="search" id="search-station" value="" data-timeout="500" placeholder="Введите название остановки"/>
+        <div id="didyoumean" class="ui-body ui-body-e" style="display:none;">
+            Вы имели в виду "<span class="fixed"></span>" ?
+        </div>
 
         <ul id="bus_stops" data-role='listview' data-inset='true'>
 
