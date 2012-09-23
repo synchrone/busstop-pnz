@@ -11,13 +11,7 @@ class Task_Check extends Minion_Task
         $station = current($stations);
 
         try{
-            Controller_Main::get_forecast_xml(
-                array(
-                    'id'=>$station['id'],
-                    'type'=>$station['type'],
-                    'city'=>Controller_Main::CITY
-                )
-            );
+            Model_Remote::stations($station->id1);
         }catch (Exception $e){
             $msg = Kohana_Exception::text($e).PHP_EOL.$e->getTraceAsString();
             mail(self::HUMAN,'WhenBus forecast fails!',$msg);
