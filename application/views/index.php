@@ -45,11 +45,16 @@
 
 <div id="forecast" data-role="page">
     <div data-role="header"  data-theme="b">
-        <a href="#" data-rel="back" data-icon="arrow-l" data-iconpos="right">Назад</a>
+        <a href="#" data-rel="back" data-icon="arrow-l">Назад</a>
         <h1></h1>
         <a href="#" class="refresh" data-role="button" data-icon="refresh">Обновить</a>
     </div>
     <div data-role="content"></div>
+
+    <!-- <fieldset class="ui-grid-solo">
+        <div class="ui-block-a"><button type="submit" data-theme="d" data-icon="star" data-iconpos="left">В избранное</button></div>
+    </fieldset> -->
+
 </div>
 
 <div id="about" data-role="page">

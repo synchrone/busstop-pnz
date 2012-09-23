@@ -15,6 +15,10 @@ class Controller_Main extends Controller {
         );
     }
 
+    public function action_favorite(){
+        //TODO: favorite stations
+    }
+
     public function action_search_stations()
     {
         $q = trim($this->request->query('q'));

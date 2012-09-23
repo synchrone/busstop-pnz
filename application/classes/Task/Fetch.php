@@ -75,7 +75,7 @@ class Task_Fetch extends Minion_Task
                     $station_xml = $station_xml['@attributes'];
                     $station_xml['heading'] = &$headings[$current_heading];
 
-                    if(Arr::get($station_xml,'end',0) == 1)
+                    if(Arr::get($station_xml,'end',0) == 1) //TODO: Стадион Пенза -> Стадион Пенза is just so wrong ...
                     {
                         $headings[$current_heading] = $station_xml['name']; //setting back-linked heading
                         $headings[] = null; //adding new empty heading
@@ -97,7 +97,6 @@ class Task_Fetch extends Minion_Task
 
             $cache->set('stations',$stations,$lifetime);
         }
-        //TODO: use MongoDB for storing stations
         file_put_contents(DOCROOT.'js/stations.json',json_encode($stations));
     }
 }
