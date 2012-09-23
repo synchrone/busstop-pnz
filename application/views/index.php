@@ -8,7 +8,7 @@
 
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link rel="apple-touch-startup-image" href="/img/startup.jpg">
+    <!-- <link rel="apple-touch-startup-image" href="/img/startup.jpg">-->
     <link rel="apple-touch-icon" href="/img/iphone-icon.png" />
 
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0-alpha.1/jquery.mobile-1.2.0-alpha.1.min.css" />
