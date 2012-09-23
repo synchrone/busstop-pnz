@@ -43,7 +43,7 @@ class Model_DidYouMean
         $closest_match = null;
         foreach($this->lib as $lib_word)
         {
-            $distance = levenshtein($lib_word,$word); //TODO: what's with wrong keyboard layout ?
+            $distance = levenshtein($lib_word,UTF8::strtolower($word)); //TODO: what's with wrong keyboard layout ?
             if($closest_match === null || $closest_match['distance'] > $distance){
                 $closest_match = array('distance' => $distance, 'word' => $lib_word);
             }
