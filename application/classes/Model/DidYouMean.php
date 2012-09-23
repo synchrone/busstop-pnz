@@ -25,10 +25,10 @@ class Model_DidYouMean
         return self::$instances[$name];
     }
 
-    public function save(){
+    public function save($lifetime){
         $this->lib = array_map(function($word){return trim(UTF8::strtolower($word));},$this->lib);
         $this->lib = array_unique($this->lib);
-        Cache::instance()->set('didyoumean-'.$this->name,$this->lib);
+        Cache::instance()->set('didyoumean-'.$this->name,$this->lib,$lifetime);
     }
 
     protected function __construct(){}

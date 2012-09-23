@@ -92,9 +92,10 @@ class Task_Fetch extends Minion_Task
                 Model_DidYouMean::instance()->learn($station['name']);
                 return Model_Station::factory($station);
             },$stations);
-            Model_DidYouMean::instance()->save();
+            $lifetime = 3600 * 24 * 30;
+            Model_DidYouMean::instance()->save($lifetime);
 
-            $cache->set('stations',$stations,3600 * 24 * 30);
+            $cache->set('stations',$stations,$lifetime);
         }
         //TODO: use MongoDB for storing stations
         file_put_contents(DOCROOT.'js/stations.json',json_encode($stations));
