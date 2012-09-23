@@ -7,13 +7,19 @@ String.prototype.format = function() {
         ;
     });
 };
+if(typeof window.navigator.standalone != 'undefined' && !window.navigator.standalone){ //iphone and !standalone
+    $('#standalone-ad').show();
+}
 
 function updateStation(data)
 {
+    $('#standalone-ad').hide();
+
+    var dym = $('#didyoumean');
     if(data.fixed_query){
-        $('#didyoumean').show().find('.fixed').html(data.fixed_query);
+        dym.show().find('.fixed').html(data.fixed_query);
     }else{
-        $('#didyoumean').hide();
+        dym.hide();
     }
 
     var list = $("#bus_stops");
@@ -111,9 +117,6 @@ $('#forecast').find('.refresh').bind('click',function(event,ui){
     $.mobile.changePage($('#forecast').attr('data-url'));
 });
 
-if(typeof window.navigator.standalone != 'undefined' && !window.navigator.standalone){ //iphone and !standalone
-    $('#standalone-ad').show();
-}
 
 if (navigator.geolocation)
 {
