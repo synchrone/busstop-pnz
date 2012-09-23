@@ -12,6 +12,8 @@
  */
 class Model_Station extends Model
 {
+    public $heading;
+
     //TODO: Variable search radius depending on accuracy
     const RADIUS = 0.37;
 
