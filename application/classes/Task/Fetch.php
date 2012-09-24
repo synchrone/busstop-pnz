@@ -15,27 +15,7 @@ class Task_Fetch extends Minion_Task
         if($params['cache'] !== 'true' || !($routes = $cache->get('routes')))
         {
             Minion_CLI::write('Fetching routes...');
-            /** @var $json_routes Request_Client */
-            $json_routes = Request::factory(self::BASE_URL.'searchAllRoutes.php')
-                ->query('city','penza')
-                ->execute()
-            ->body();
-
-            $json_routes = json_decode($json_routes);
-            $routes = array();
-            foreach($json_routes as $type=>$csv)
-            {
-                $csv = explode('@ROUTE=',$csv);
-                array_shift($csv);
-
-                foreach($csv as $route)
-                {
-                    $route_info = array_combine(array(
-                        'formal_name','full_name','name','start','finish','type','id1','id2'
-                    ),str_getcsv($route,';'));
-                    $routes[] = $route_info;
-                }
-            }
+            $routes = Model_Remote::routes();
             $cache->set('routes',$routes);
         }
 
@@ -45,15 +25,15 @@ class Task_Fetch extends Minion_Task
 
             foreach($routes as $route)
             {
-                Minion_CLI::write('Fetching stations for route '.$route['formal_name'].'...');
+                Minion_CLI::write('Fetching stations for route '.$route->formal_name.'ids:('.(int)$route->id1.','.$route->id2.')...');
                 $xml_stations_body = Request::factory(
                     sprintf(self::BASE_URL.'getRouteStations.php')
                 )
                 ->query(array(
                     'city'=>'penza',
                     'type'=>0,
-                    'id1'=>(int)$route['id1'],
-                    'id2'=>(int)$route['id2']
+                    'id1'=>(int)$route->id1,
+                    'id2'=>(int)$route->id2
                 ))
                 ->execute()->body();
 
@@ -67,7 +47,6 @@ class Task_Fetch extends Minion_Task
 
                 $headings = array(null);
                 $current_heading = 0;
-                $i = 0;
 
                 foreach($xml_stations->children() as /** @var  $station_xml SimpleXMLElement */ $station_xml)
                 {
@@ -84,11 +63,9 @@ class Task_Fetch extends Minion_Task
                     }
                     $stations[$station_xml['id']] = $station_xml;
                 }
-                $headings = array(null);
-                $current_heading = 0;
-                $i = 0;
             }
             $stations = array_map(function($station){
+                Minion_CLI::write($station['name'].' -> '.$station['heading']);
                 Model_DidYouMean::instance()->learn($station['name']);
                 return Model_Station::factory($station);
             },$stations);
