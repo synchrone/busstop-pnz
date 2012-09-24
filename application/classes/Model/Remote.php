@@ -74,26 +74,27 @@ class Model_Remote extends Model
     /**
      * @param $route_id
      * @param $route_id2
-     * @return SimpleXMLElement|Model_Station[]
+     * @return Model_Station[]
      */
-    public static function stations($route_id,$route_id2=null)
+    public static function stations($route_id,$heading)
     {
         $stations = self::xml_request('getRouteStations.php',array(
             'type'=>0,
             'id1'=>(int)$route_id,
-            'id2'=>(int)($route_id2 === null ? $route_id : $route_id2)
+            'id2'=>(int)$route_id
         ));
-        return $stations;
 
         $data = array();
         foreach($stations->children() as $station){
             $station = (array)$station;
             /** @var $station Model_Station */
             $station = Model_Station::factory($station['@attributes']);
+            $station->heading = $heading;
             $data[$station->id] = $station;
             unset($station);
         }
         unset($stations);
+        array_pop($data); //removing last stop, because this is the first one of the opposite direction
         return $data;
     }
 
