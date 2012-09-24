@@ -11,6 +11,8 @@ class Model_Remote extends Model
     {
         /** @var $response Response */
         $response = Request::factory(self::BASE_URL.$url)
+            ->headers('Cache-Control','no-cache')
+            ->headers('Pragma','no-cache')
             ->query(array('city' => self::CITY) + $query_params)
             ->execute();
 

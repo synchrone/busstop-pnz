@@ -50,6 +50,9 @@ class Controller_Main extends Controller {
 
     public function action_forecast()
     {
-        $this->response->body(json_encode(Model_Remote::forecast($this->request->query())));
+        $this->response
+            ->headers('Cache-Control','no-cache') //HTTP/1.1
+            ->headers('Expires','Thu, 01 Dec 1994 16:00:00 GMT') //HTTP/1.0 style
+            ->body(json_encode(Model_Remote::forecast($this->request->query())));
     }
 } // End Welcome
