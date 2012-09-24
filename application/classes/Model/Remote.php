@@ -74,7 +74,7 @@ class Model_Remote extends Model
     /**
      * @param $route_id
      * @param $route_id2
-     * @return Model_Station[]
+     * @return SimpleXMLElement|Model_Station[]
      */
     public static function stations($route_id,$route_id2=null)
     {
@@ -83,6 +83,7 @@ class Model_Remote extends Model
             'id1'=>(int)$route_id,
             'id2'=>(int)($route_id2 === null ? $route_id : $route_id2)
         ));
+        return $stations;
 
         $data = array();
         foreach($stations->children() as $station){

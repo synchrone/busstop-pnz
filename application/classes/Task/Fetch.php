@@ -26,24 +26,7 @@ class Task_Fetch extends Minion_Task
             foreach($routes as $route)
             {
                 Minion_CLI::write('Fetching stations for route '.$route->formal_name.'ids:('.(int)$route->id1.','.$route->id2.')...');
-                $xml_stations_body = Request::factory(
-                    sprintf(self::BASE_URL.'getRouteStations.php')
-                )
-                ->query(array(
-                    'city'=>'penza',
-                    'type'=>0,
-                    'id1'=>(int)$route->id1,
-                    'id2'=>(int)$route->id2
-                ))
-                ->execute()->body();
-
-                /** @var $xml_stations SimpleXMLElement */
-                $xml_stations = simplexml_load_string($xml_stations_body);
-
-                if($xml_stations === false){
-                    Minion_CLI::write('Could not parse '. $xml_stations_body.' from '.var_export($route,true));
-                    return;
-                }
+                $xml_stations = Model_Remote::stations($route->id1,$route->id2);
 
                 $headings = array(null);
                 $current_heading = 0;
