@@ -34,12 +34,15 @@ function updateStation(data)
                 .data('station_name',station.name)
                 .text(station.name + ' (→'+station.heading+')')
                 .click(function(e){
-                    $('#forecast').find('h1').text($(this).data().station_name)
+                    var station_name = $(this).data().station_name;
+                    yandexMetrika.reachGoal('forecast',{query: station_name});
+                    $('#forecast').find('h1').text(station_name);
                 })
             )
         );
     }
     list.listview('refresh');
+    yandexMetrika.reachGoal('search',{query:data.query});
 }
 
 function showForecast(url,options)

@@ -35,6 +35,7 @@ class Model_DidYouMean
 
     public function learn($name)
     {
+        //TODO: don't learn words < 3 letters
         $this->lib = array_merge(Text::split_words($name),$this->lib);
     }
 
