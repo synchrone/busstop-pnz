@@ -30,12 +30,8 @@ class Model_Station extends Model
         $results = array();
         foreach(self::fetch() as $station)
         {
-            foreach(Text::split_words($query) as $word)
-            {
-                if(UTF8::stripos($station->name,$word) !== false)
-                {
-                    $results[$station->id] = $station;
-                }
+            if($station->match($query)){
+                $results[$station->id] = $station;
             }
         }
         return array_values($results);
@@ -70,5 +66,17 @@ class Model_Station extends Model
     }
     public function lon(){
         return $this->floatify($this->lon0);
+    }
+
+    protected function match($query)
+    {
+        foreach(Text::split_words($query) as $word)
+        {
+            if(UTF8::stripos($this->name,$word) === false)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
