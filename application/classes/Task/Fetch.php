@@ -29,6 +29,7 @@ class Task_Fetch extends Minion_Task
             //proposed solution -> iterate over found stations for each route and make heading list in each station
         }
 
+        Model_DidYouMean::instance()->clear();
         array_map(function($station){
             Minion_CLI::write(sprintf('%d:%s -> %s',$station->id,$station->name,$station->heading));
             Model_DidYouMean::instance()->learn($station->name);

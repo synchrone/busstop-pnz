@@ -4,6 +4,8 @@
  */
 class Model_DidYouMean
 {
+    const MIN_WORD_LENGTH = 3;
+
     public $max_distance = 4;
     protected $lib;
     protected $name;
@@ -30,13 +32,20 @@ class Model_DidYouMean
         $this->lib = array_unique($this->lib);
         Cache::instance()->set('didyoumean-'.$this->name,$this->lib,$lifetime);
     }
+    public function clear(){
+        $this->lib = array();
+        return $this;
+    }
 
     protected function __construct(){}
 
     public function learn($name)
     {
-        //TODO: don't learn words < 3 letters
-        $this->lib = array_merge(Text::split_words($name),$this->lib);
+        $words = Text::split_words($name);
+        $words = array_filter($words,function($word){
+            return UTF8::strlen($word) >= Model_DidYouMean::MIN_WORD_LENGTH;
+        });
+        $this->lib = array_merge($words,$this->lib);
     }
 
     protected function find_replacement($word)
