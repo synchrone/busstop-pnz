@@ -14,6 +14,9 @@ class Model_Station extends Model
 {
     public $heading;
 
+    const MATCH_ALL = 'match_all';
+    const MATCH_ANY = 'match_any';
+
     //TODO: Variable search radius depending on accuracy
     const RADIUS = 0.37;
 
@@ -25,12 +28,12 @@ class Model_Station extends Model
         return Cache::instance()->get('stations');
     }
 
-    public static function search($query)
+    public static function search($query,$match_type)
     {
         $results = array();
         foreach(self::fetch() as $station)
         {
-            if($station->match($query)){
+            if($station->$match_type($query)){
                 $results[$station->id] = $station;
             }
         }
@@ -68,7 +71,7 @@ class Model_Station extends Model
         return $this->floatify($this->lon0);
     }
 
-    protected function match($query)
+    protected function match_all($query)
     {
         foreach(Text::split_words($query) as $word)
         {
@@ -78,5 +81,15 @@ class Model_Station extends Model
             }
         }
         return true;
+    }
+    protected function match_any($query){
+        foreach(Text::split_words($query) as $word)
+        {
+            if(UTF8::stripos($this->name,$word) !== false)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

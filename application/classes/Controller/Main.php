@@ -23,15 +23,21 @@ class Controller_Main extends Controller {
     {
         $q = trim($this->request->query('q'));
         $result = array(
-            'stations' => Model_Station::search($q),
+            'stations' => Model_Station::search($q,Model_Station::MATCH_ALL),
             'query' => $q,
             'fixed_query' => null
         );
 
-        if(count($result['stations']) == 0){ //typo ?
+        if(count($result['stations']) == 0) //typo ?
+        {
             $result['fixed_query'] = Model_DidYouMean::instance()->fix($q);
-            if($result['fixed_query'] != null){
-                $result['stations'] = Model_Station::search($result['fixed_query']);
+
+            if($result['fixed_query'] != null) //there were replacements made
+            {
+                $result['stations'] = Model_Station::search(
+                    $result['fixed_query'],
+                    Model_Station::MATCH_ANY
+                );
             }
         }
 
