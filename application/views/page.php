@@ -14,6 +14,12 @@
     <link rel="stylesheet" href="/css/jquery.mobile-1.2.0-rc.2.min.css" />
     <link rel="stylesheet" href="/css/style.css" />
 	<script src="/js/jquery-1.8.1.min.js"></script>
+    <script>
+        $(document).bind("mobileinit", function(){
+          $.mobile.defaultDialogTransition =
+            $.mobile.defaultPageTransition = 'none';
+        });
+    </script>
 	<script src="/js/jquery.mobile-1.2.0-rc.2.min.js"></script>
     <script src="/js/jquery.cookie.js"></script>
     <script src="/js/jquery.total-storage.min.js"></script>
