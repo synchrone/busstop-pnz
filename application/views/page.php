@@ -16,7 +16,7 @@
 	<script src="http://code.jquery.com/jquery-1.8.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.2.0-rc.2/jquery.mobile-1.2.0-rc.2.js"></script>
     <script src="/js/jquery.cookie.js"></script>
-    <script src="/js/jquery.total-storage.js"></script>
+    <script src="/js/jquery.total-storage.min.js"></script>
     <script src="/js/jqm-search-contrib.js"></script>
 </head>
 <body>
