@@ -18,7 +18,8 @@ class Model_Station extends Model
     const MATCH_ANY = 'match_any';
 
     //TODO: Variable search radius depending on accuracy
-    const RADIUS = 0.37;
+    const RADIUS = 0.35;
+    const MIN_ACCURACY = 1500;
 
     /**
      * @return Model_Station[]
@@ -40,8 +41,10 @@ class Model_Station extends Model
         return array_values($results);
     }
 
-    public static function nearest($lat,$lon)
+    public static function nearest($lat,$lon,$accuracy)
     {
+        if($accuracy > self::MIN_ACCURACY){ return array();}
+
         $loc = array('lat'=>(float)$lat,'lon'=>(float)$lon);
         $result = array();
 

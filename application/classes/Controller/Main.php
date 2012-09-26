@@ -35,24 +35,20 @@ class Controller_Main extends Controller
 
     public function action_index()
    	{
+       $r = $this->request;
        $content = View::factory('inc/default-items')
            ->set('favorite',
-               Model_Station::by_id(
-                   json_decode(Arr::get($_COOKIE,'favorite'))
-                   // kohana is paranoid so just $_COOKIE
-               )
+               Model_Station::by_id($r->query('favorite'))
            );
 
-       $r = $this->request;
        if(
            ($lat = $r->query('latitude')) &&
-           ($lon = $r->query('longtitude')) &&
-           ($accuracy = $r->query('accuracy')) &&
-            $accuracy < 1500
+           ($lon = $r->query('longitude')) &&
+           ($accuracy = $r->query('accuracy'))
        ){
            $content->set('nearest',
                Model_Station::nearest(
-                   $r->query('latitude'), $r->query('longtitude')
+                   $lat, $lon, $accuracy
                )
            );
        }
