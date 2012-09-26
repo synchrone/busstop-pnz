@@ -73,7 +73,7 @@ class Model_Remote extends Model
 
     /**
      * @param $route_id
-     * @param $route_id2
+     * @param $heading
      * @return Model_Station[]
      */
     public static function stations($route_id,$heading)
@@ -90,7 +90,7 @@ class Model_Remote extends Model
             /** @var $station Model_Station */
             $station = Model_Station::factory($station['@attributes']);
             $station->heading = $heading;
-            $data[$station->id] = $station;
+            $data[(string)$station->id] = $station;
             unset($station);
         }
         unset($stations);
@@ -103,7 +103,7 @@ class Model_Remote extends Model
         $forecast = array();
         foreach($xml_vehicles->children() as $vehicle){
             $vehicle= (array)$vehicle;
-            $forecast[] = $vehicle['@attributes'];
+            $forecast[] = Model_Forecast::factory($vehicle['@attributes']);
         }
         return $forecast;
     }

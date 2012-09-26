@@ -1,23 +1,66 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Controller_Main extends Controller {
-
+class Controller_Main extends Controller
+{
     const CITY = 'penza';
 
-    public function before(){
-        $this->response->headers('Content-Type','application/json');
+    public function before()
+    {
+        $this->response->headers('Content-Type','text/html');
+    }
+    public function after()
+    {
+        if($this->response->headers('Content-Type')=='text/html' && !$this->request->is_ajax())
+        {
+            //wrap in normal page for non-ajax responses with default content-type intact
+            $this->response->body(new Page($this->response->body()));
+        }
+    }
+    public function json_response($data)
+    {
+        return $this->response
+            ->headers('Content-Type','application/json')
+            ->body(json_encode($data));
     }
 
-    public function action_index(){
-        $this->response
+    /**
+     * @param $data
+     * @return Response
+     */
+    public function html_response($data){
+        return $this->response
             ->headers('Content-Type','text/html')
-            ->body(View::factory('index')
-        );
+            ->body($data);
     }
 
-    public function action_favorite(){
-        //TODO: favorite stations
-    }
+    public function action_index()
+   	{
+       $content = View::factory('inc/default-items')
+           ->set('favorite',
+               Model_Station::by_id(
+                   json_decode(Arr::get($_COOKIE,'favorite'))
+                   // kohana is paranoid so just $_COOKIE
+               )
+           );
+
+       $r = $this->request;
+       if(
+           ($lat = $r->query('latitude')) &&
+           ($lon = $r->query('longtitude')) &&
+           ($accuracy = $r->query('accuracy')) &&
+            $accuracy < 1500
+       ){
+           $content->set('nearest',
+               Model_Station::nearest(
+                   $r->query('latitude'), $r->query('longtitude')
+               )
+           );
+       }
+       if(!$this->request->is_ajax() || !count($this->request->query())){
+           $content = View::factory('search',array('content'=>$content));
+       }
+       $this->html_response($content);
+   }
 
     public function action_search_stations()
     {
@@ -40,25 +83,27 @@ class Controller_Main extends Controller {
                 );
             }
         }
-
-        $this->response->body(json_encode($result));
-    }
-
-	public function action_nearest_stations()
-	{
-        $r = $this->request;
-        $this->response->body(
-            json_encode(
-                Model_Station::nearest($r->query('lat'),$r->query('lon'))
-            )
-        );
+        $result['results'] = View::factory('inc/search-items')
+            ->set('items',$result['stations'])->render();
+        unset($result['stations']);
+        $this->json_response($result);
     }
 
     public function action_forecast()
     {
-        $this->response
-            ->headers('Cache-Control','no-cache') //HTTP/1.1
-            ->headers('Expires','Thu, 01 Dec 1994 16:00:00 GMT') //HTTP/1.0 style
-            ->body(json_encode(Model_Remote::forecast($this->request->query())));
+        $this->html_response(
+            View::factory('forecast')
+            ->set('forecast',
+                Model_Remote::forecast($this->request->query())
+            )
+            ->set('station',Model_Station::by_id($this->request->query('id'),true))
+        )
+        ->headers('Cache-Control','no-cache') //HTTP/1.1
+        ->headers('Expires','Thu, 01 Dec 1994 16:00:00 GMT') //HTTP/1.0 style
+        ;
+    }
+
+    public function action_about(){
+        $this->html_response(View::factory('about'));
     }
 } // End Welcome

@@ -24,7 +24,7 @@ class Task_Fetch extends Minion_Task
 
             $stations_there = Model_Remote::stations($route->id1,$route->finish);
             $stations_backhere = Model_Remote::stations($route->id2,$route->start);
-            $stations = array_merge($stations,$stations_there,$stations_backhere);
+            $stations = $stations_there + $stations_backhere + $stations;
             //TODO: merging like this makes station with different routes going to the opposite sides of the city be ambigous
             //proposed solution -> iterate over found stations for each route and make heading list in each station
         }

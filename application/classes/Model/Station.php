@@ -60,6 +60,23 @@ class Model_Station extends Model
         return $result;
     }
 
+    public static function by_id($id,$single=false)
+    {
+        $id = (array)$id;
+        if(empty($id)){return array();}
+
+        $stations = array();
+        foreach(self::fetch() as /** @var $station Model_Station */ $station)
+        {
+            if(in_array($station->id,$id))
+            {
+                if($single){return $station;}
+                $stations[] = $station;
+            }
+        }
+        return $stations;
+    }
+
 
     protected function floatify($buspnz_latlon){
         return (float)(substr($buspnz_latlon,0,2).'.'.substr($buspnz_latlon,2));

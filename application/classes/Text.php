@@ -6,4 +6,8 @@ class Text extends Kohana_Text
     {
         return preg_split('/[[:space:]-._]/',$words);
     }
+
+    public static function minutes($seconds){
+        return round(((float)$seconds) / 60).' мин.';
+    }
 }

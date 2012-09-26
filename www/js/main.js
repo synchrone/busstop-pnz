@@ -1,3 +1,5 @@
+(function($){
+$.cookie.json = true;
 String.prototype.format = function() {
     var args = arguments;
     return this.replace(/{(\d+)}/g, function(match, number) {
@@ -7,146 +9,127 @@ String.prototype.format = function() {
         ;
     });
 };
-if(typeof window.navigator.standalone != 'undefined' && !window.navigator.standalone){ //iphone and !standalone
-    $('#standalone-ad').show();
-}
 
-function updateStation(data)
-{
-    $('#standalone-ad').hide();
-
-    var dym = $('#didyoumean');
-    if(data.fixed_query){
-        dym.show().find('.fixed').html(data.fixed_query);
-    }else{
-        dym.hide();
-    }
-
-    var list = $("#bus_stops");
-    list.empty();
-    for (var i = 0, station; station = data.stations[i]; ++i)
-    {
-        list.append(
-            $('<li></li>').append(
-                $('<a>').attr('href','/forecast?'+
-                    $.param({id:station.id, type: station.type})
-                )
-                .data('station_name',station.name)
-                .text(station.name + ' (→'+station.heading+')')
-                .click(function(e){
-                    var station_name = $(this).data().station_name;
-                    yandexMetrika.reachGoal('forecast',{query: station_name});
-                    $('#forecast').find('h1').text(station_name);
-                })
-            )
+function get_geolocation(callback,accuracy,timeout,age){
+    if (navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(
+            function(position){
+                callback.call(null, position.coords);
+            },function(error){
+                callback.call(null,{error: error});
+            },{
+                enableHighAccuracy:accuracy || true,
+                timeout:timeout || 30000,
+                maximumAge:age || 10000
+            }
         );
+    }else{
+        callback.call(null,{error: 'not_supported'});
     }
-    list.listview('refresh');
-    yandexMetrika.reachGoal('search',{query:data.query});
 }
 
-function showForecast(url,options)
-{
-    $.get( url, function( vehicles ) {
-        if ( vehicles ) {
-            // Get the page we are going to dump our content into.
-            var $page = $( "#forecast" ),
-                $content = $page.children( ":jqmData(role=content)" ),
+$(document).on("pageinit", "#search", function() {
+    var page = $(this);
+    var results = $(page.find('.search-results'));
+    var didyoumean = $(page.find('.didyoumean'));
 
-                // The markup we are going to inject into the content
-                // area of the page.
-                markup = "<ul data-role='listview' data-inset='true'>"
-            ;
-
-            // Generate a list item for each item in the category
-            // and add it to our markup.
-            for ( var i = 0, vehicle; vehicle = vehicles[i]; i++ ) {
-                markup += '<li><img src="img/{0}.png" alt="{1}" class="ui-li-icon">{1} <span class="ui-li-count">{2}</span></li>'
-                    .format(
-                        vehicle.route_type,
-                        '{0} → {1}'.format(vehicle.route_num, vehicle.where_go),
-                        Math.round(vehicle.arr_time / 60,2) + ' мин.'
-                    );
-            }
-            markup += "</ul>";
-
-            // Inject the category items markup into the content element.
-            $content.html( markup );
-
-            // Pages are lazily enhanced. We call page() on the page
-            // element to make sure it is always enhanced before we
-            // attempt to enhance the listview markup we just injected.
-            // Subsequent calls to page() are ignored since a page/widget
-            // can only be enhanced once.
-            $page.page();
-
-            // Enhance the listview we just injected.
-            $content.find( ":jqmData(role=listview)" ).listview();
-
-            // We don't want the data-url of the page we just modified
-            // to be the url that shows up in the browser's location field,
-            // so set the dataUrl option to the URL for the category
-            // we just loaded.
-            options.dataUrl = url;
-            // Now call changePage() and tell it to switch to
-            // the page we just modified.
-
-            $.mobile.changePage( $page, options );
-            $page.attr('data-url',url);
-            $.mobile.loading('hide');
-        }
-    },'json');
-}
-
-
-$('#search-station').live('input',function(event,ui){
-    if(typeof this.searchTimeout != 'undefined'){
-        clearTimeout(this.searchTimeout);
-        delete this.searchTimeout;
+    var standalone_ad = $(page.find('.standalone-ad'));
+    if(typeof window.navigator.standalone != 'undefined' &&
+       !window.navigator.standalone || true
+    ){
+        standalone_ad.show();
     }
-    var that = this;
-    this.searchTimeout = setTimeout(function(){
-        var text = $(that).val();
-        if(text != ''){
-            $.get('/search_stations',{
-                q:text
-            },updateStation,'json');
-        }
-    },$(this).data().timeout);
-});
 
-$('#forecast').find('.refresh').bind('click',function(event,ui){
-    $.mobile.loading( 'show' );
-    $.mobile.changePage($('#forecast').attr('data-url'));
-});
+    var default_list = function(){
+        didyoumean.hide();
+        get_geolocation(function(c){
+            results.load('/?'+ $.param($.extend(c,{favorite:$.totalStorage('favorite') || []})),function(){
+                results.listview('refresh');
+            })
+        });
+    };
 
-
-if (navigator.geolocation)
-{
-    navigator.geolocation.getCurrentPosition(
-        function(position)
+    var search = $(page.find('.search'))
+        .on('textinput',function()
         {
-            var c = position.coords;
-            if(c.accuracy < 1500){
-                $.get('/nearest_stations',{
-                    lat:c.latitude,
-                    lon:c.longitude,
-                    accuracy: c.accuracy
-                },updateStation,'json');
-            }
-        },
-        function(error)
-        {
-            console.log(error);
-        },
-        {enableHighAccuracy:true,timeout:30000,maximumAge:10000}
-    );
-
-    $( ".geo-debug").bind('expand',function(event, ui)
-    {
-        var geo_debug = $(this).find('p');
-        navigator.geolocation.getCurrentPosition(function(position)
+            $.get('/search_stations',{q:$(this).val()},function(data)
             {
+                if(data.fixed_query){
+                    didyoumean.show()
+                        .find('.fixed').html(data.fixed_query);
+                }else{
+                    didyoumean.hide();
+                }
+                results.html(data.results).listview('refresh');
+
+                standalone_ad.hide();
+            });
+
+        })
+        .on('clear',default_list)
+    ;
+    default_list();
+});
+$(document).on('pagechange',function(e,v){
+    if(typeof v!= 'undefined'){
+        v.toPage.trigger('pagechanged');
+    }
+});
+$(document).on("pagechanged", "#forecast", function() {
+    var page = $(this);
+
+    var refresh = $(page.find('.refresh'))
+    .click(function(){
+        $.mobile.changePage(location.href, {
+            allowSamePageTransition:true,
+            reloadPage: true,
+            changeHash: false
+        });
+    });
+
+    //there must be a better way ...
+    var favorite = $(page.find('.favorite'));
+    favorite.data('favorite_handlers',{
+        is: function(id){
+            return $.inArray(page.data('station-id'), $.totalStorage('favorite')) != -1;
+        },
+        set: function(){
+            $.totalStorage('favorite',
+                $.merge($.totalStorage('favorite') || [],[page.data('station-id')])
+            );
+        },
+        unset: function(){
+            var favorite_ids = $.totalStorage('favorite');
+            delete favorite_ids[favorite_ids.indexOf(page.data('station-id'))];
+            $.totalStorage('favorite',favorite_ids);
+        },
+        refresh: function(){
+            $this = $(this);
+            var h = $this.data('favorite_handlers');
+            $this.html(h.is() ? 'Убрать из избранного' : 'В избранное')
+                .button('refresh');
+        }
+    })
+    .click(function(){
+        $this = $(this);
+        var h = $this.data('favorite_handlers');
+        if(h.is()){
+            h.unset();
+        }else{
+            h.set();
+        }
+        h.refresh.call($this);
+    }).data('favorite_handlers').refresh.call(favorite);
+});
+
+$(document).on("pageinit", "#about", function() {
+    $($(this).find(".geo-debug"))
+    .on('expand',function()
+    {
+        var that = this;
+        get_geolocation(function(){
+            var geo_debug = $(that).find('p');
+            navigator.geolocation.getCurrentPosition(function(position){
                 var c = position.coords;
                 var text = '<p>Широта: ' + c.latitude + '</p>'
                          + '<p>Долгота: ' + c.longitude + '</p>';
@@ -157,29 +140,11 @@ if (navigator.geolocation)
                 text += c.heading ? '<p>Направление: ' + c.heading + '</p>' : '';
                 text += c.timestamp ? '<p>Последнее определение: ' + new Date(position.timestamp).toString() + '</p>' : '';
                 geo_debug.html(text);
-            },null,{enableHighAccuracy:true,timeout:30000,maximumAge:10000}
-        );
+            },null,{enableHighAccuracy:true,timeout:30000,maximumAge:10000});
+        });
     });
-}
-
-// Listen for any attempts to call changePage().
-$(document).bind( "pagebeforechange", function( e, data ) {
-	// We only want to handle changePage() calls where the caller is
-	// asking us to load a page by URL.
-	if ( typeof data.toPage === "string" ) {
-		// We are being asked to load a page by URL, but we only
-		// want to handle URLs that request the data for a specific
-		// category.
-		var u = $.mobile.path.parseUrl( data.toPage );
-		if ( u.pathname.search("forecast") !== -1 ) {
-			// We're being asked to display the items for a specific category.
-			// Call our internal method that builds the content for the category
-			// on the fly based on our in-memory category data structure.
-			showForecast( u.pathname + u.search, data.options );
-
-			// Make sure to tell changePage() we've handled this call so it doesn't
-			// have to do anything.
-			e.preventDefault();
-		}
-	}
 });
+
+})(jQuery);
+
+
