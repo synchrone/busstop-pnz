@@ -52,7 +52,8 @@ $(document).on("pageinit", "#search", function() {
     var search = $(page.find('.search'))
         .on('textinput',function()
         {
-            $.get('/search_stations',{q:$(this).val()},function(data)
+            var query = $(this).val();
+            $.get('/search_stations',{q:query},function(data)
             {
                 if(data.fixed_query){
                     didyoumean.show()
@@ -63,8 +64,8 @@ $(document).on("pageinit", "#search", function() {
                 results.html(data.results).listview('refresh');
 
                 standalone_ad.hide();
+                window.yandexMetrika.reachGoal('search',{query:query});
             });
-
         })
         .on('clear',default_list)
     ;
@@ -77,6 +78,8 @@ $(document).on('pagechange',function(e,v){
 });
 $(document).on("pagechanged", "#forecast", function() {
     var page = $(this);
+    var station_id = page.data('station-id');
+    var station_name = $(page.find('.station_name')).html();
 
     var refresh = $(page.find('.refresh'))
     .click(function(){
@@ -91,16 +94,17 @@ $(document).on("pagechanged", "#forecast", function() {
     var favorite = $(page.find('.favorite'));
     favorite.data('favorite_handlers',{
         is: function(id){
-            return $.inArray(page.data('station-id'), $.totalStorage('favorite')) != -1;
+            return $.inArray(station_id, $.totalStorage('favorite')) != -1;
         },
         set: function(){
             $.totalStorage('favorite',
-                $.merge($.totalStorage('favorite') || [],[page.data('station-id')])
+                $.merge($.totalStorage('favorite') || [],[station_id])
             );
+            window.yandexMetrika.reachGoal('favorite',{station_name:station_name});
         },
         unset: function(){
             var favorite_ids = $.totalStorage('favorite');
-            delete favorite_ids[favorite_ids.indexOf(page.data('station-id'))];
+            delete favorite_ids[favorite_ids.indexOf(station_id)];
             $.totalStorage('favorite',favorite_ids);
         },
         refresh: function(){
@@ -120,6 +124,8 @@ $(document).on("pagechanged", "#forecast", function() {
         }
         h.refresh.call($this);
     }).data('favorite_handlers').refresh.call(favorite);
+
+    window.yandexMetrika.reachGoal('forecast',{query:station_name});
 });
 
 $(document).on("pageinit", "#about", function() {

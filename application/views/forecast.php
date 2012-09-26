@@ -4,7 +4,7 @@
 ?><div id="forecast" data-role="page" data-station-id="<?=$station->id?>">
     <div data-role="header"  data-theme="b">
         <a href="#" data-rel="back" data-icon="arrow-l">Назад</a>
-        <h1><?=$station->name?></h1>
+        <h1 class="station_name"><?=$station->name?></h1>
         <a href="#" class="refresh" data-role="refresh" data-icon="refresh">Обновить</a>
     </div>
     <div data-role="content">
