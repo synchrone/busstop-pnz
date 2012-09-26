@@ -11,10 +11,10 @@
     <!-- <link rel="apple-touch-startup-image" href="/img/startup.jpg">-->
     <link rel="apple-touch-icon" href="/img/iphone-icon.png" />
 
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0-rc.2/jquery.mobile-1.2.0-rc.2.min.css" />
+    <link rel="stylesheet" href="/css/jquery.mobile-1.2.0-rc.2.min.css" />
     <link rel="stylesheet" href="/css/style.css" />
-	<script src="http://code.jquery.com/jquery-1.8.1.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.2.0-rc.2/jquery.mobile-1.2.0-rc.2.js"></script>
+	<script src="/js/jquery-1.8.1.min.js"></script>
+	<script src="/js/jquery.mobile-1.2.0-rc.2.min.js"></script>
     <script src="/js/jquery.cookie.js"></script>
     <script src="/js/jquery.total-storage.min.js"></script>
     <script src="/js/jqm-search-contrib.js"></script>
