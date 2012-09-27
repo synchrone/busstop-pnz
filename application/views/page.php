@@ -11,19 +11,20 @@
     <!-- <link rel="apple-touch-startup-image" href="/img/startup.jpg">-->
     <link rel="apple-touch-icon" href="/img/iphone-icon.png" />
 
-    <link rel="stylesheet" href="/css/jquery.mobile-1.2.0-rc.2.min.css" />
-    <link rel="stylesheet" href="/css/style.css" />
-	<script src="/js/jquery-1.8.1.min.js"></script>
-    <script>
-        $(document).bind("mobileinit", function(){
-          $.mobile.defaultDialogTransition =
-            $.mobile.defaultPageTransition = 'none';
-        });
-    </script>
-	<script src="/js/jquery.mobile-1.2.0-rc.2.min.js"></script>
-    <script src="/js/jquery.cookie.js"></script>
-    <script src="/js/jquery.total-storage.min.js"></script>
-    <script src="/js/jqm-search-contrib.js"></script>
+    <?php
+    if(Kohana::$environment == Kohana::PRODUCTION){ ?>
+        <link rel="stylesheet" href="/css/jquery.mobile-1.2.0-rc.2.min.css" />
+        <link rel="stylesheet" href="/css/style.css" />
+        <script src="/js/jquery-1.8.1.min.js"></script>
+        <script src="/js/jqm-custom-settings.js"></script>
+        <script src="/js/jquery.mobile-1.2.0-rc.2.min.js"></script>
+        <script src="/js/jquery.cookie.js"></script>
+        <script src="/js/jquery.total-storage.min.js"></script>
+        <script src="/js/jqm-search-contrib.js"></script>
+    <?php } else { ?>
+        <link rel="stylesheet" href="/css/compiled.css" />
+        <script src="/js/compiled.js"></script>
+    <?php } ?>
 </head>
 <body>
 
