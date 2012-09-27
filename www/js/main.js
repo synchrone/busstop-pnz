@@ -35,7 +35,7 @@ $(document).on("pageinit", "#search", function() {
 
     var standalone_ad = $(page.find('.standalone-ad'));
     if(typeof window.navigator.standalone != 'undefined' &&
-       !window.navigator.standalone || true
+       !window.navigator.standalone
     ){
         standalone_ad.show();
     }
