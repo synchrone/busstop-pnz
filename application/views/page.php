@@ -11,6 +11,34 @@
     <!-- <link rel="apple-touch-startup-image" href="/img/startup.jpg">-->
     <link rel="apple-touch-icon" href="/img/iphone-icon.png" />
 
+    <!-- Yandex.Metrika counter is here to set w.yandexMetrika before compiled.js is executed -->
+    <script type="text/javascript">
+    (function (d, w, c) {
+        (w[c] = w[c] || []).push(function () {
+            try {
+                w.yandexMetrika = w.yaCounter16755400 = new Ya.Metrika({id:16755400, accurateTrackBounce:true, trackHash:true});
+            } catch (e) {
+            }
+        });
+        var n = d.getElementsByTagName("script")[0],
+            s = d.createElement("script"),
+            f = function () {
+                n.parentNode.insertBefore(s, n);
+            };
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+        if (w.opera == "[object Opera]") {
+            d.addEventListener("DOMContentLoaded", f);
+        } else {
+            f();
+        }
+    })(document, window, "yandex_metrika_callbacks");</script>
+    <noscript>
+        <div><img src="//mc.yandex.ru/watch/16755400" style="position:absolute; left:-9999px;" alt=""/></div>
+    </noscript>
+    <!-- /Yandex.Metrika counter -->
+
     <?php
     if(Kohana::$environment == Kohana::DEVELOPMENT){ ?>
         <link rel="stylesheet" href="/css/jquery.mobile-1.2.0-rc.2.min.css" />
@@ -31,32 +59,5 @@
 
 <?=$content;?>
 
-<!-- Yandex.Metrika counter -->
-<script type="text/javascript">
-(function (d, w, c) {
-    (w[c] = w[c] || []).push(function () {
-        try {
-            w.yandexMetrika = w.yaCounter16755400 = new Ya.Metrika({id:16755400, accurateTrackBounce:true, trackHash:true});
-        } catch (e) {
-        }
-    });
-    var n = d.getElementsByTagName("script")[0],
-        s = d.createElement("script"),
-        f = function () {
-            n.parentNode.insertBefore(s, n);
-        };
-    s.type = "text/javascript";
-    s.async = true;
-    s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
-    if (w.opera == "[object Opera]") {
-        d.addEventListener("DOMContentLoaded", f);
-    } else {
-        f();
-    }
-})(document, window, "yandex_metrika_callbacks");</script>
-<noscript>
-    <div><img src="//mc.yandex.ru/watch/16755400" style="position:absolute; left:-9999px;" alt=""/></div>
-</noscript>
-<!-- /Yandex.Metrika counter -->
 </body>
 </html>
