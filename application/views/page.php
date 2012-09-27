@@ -16,11 +16,11 @@
         <link rel="stylesheet" href="/css/jquery.mobile-1.2.0-rc.2.min.css" />
         <link rel="stylesheet" href="/css/style.css" />
         <script src="/js/jquery-1.8.1.min.js"></script>
-        <script src="/js/jqm-custom-settings.js"></script>
+        <script src="/js/jquery.custom-settings.js"></script>
         <script src="/js/jquery.mobile-1.2.0-rc.2.min.js"></script>
         <script src="/js/jquery.cookie.js"></script>
         <script src="/js/jquery.total-storage.min.js"></script>
-        <script src="/js/jqm-search-contrib.js"></script>
+        <script src="/js/jquery.mobile.search.contrib.js"></script>
     <?php } else { ?>
         <link rel="stylesheet" href="/css/compiled.css" />
         <script src="/js/compiled.js"></script>
@@ -57,6 +57,5 @@
     <div><img src="//mc.yandex.ru/watch/16755400" style="position:absolute; left:-9999px;" alt=""/></div>
 </noscript>
 <!-- /Yandex.Metrika counter -->
-<script src='/js/main.js'></script>
 </body>
 </html>
