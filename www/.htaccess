@@ -1,5 +1,6 @@
 SetEnv KOHANA_ENV production
 php_flag magic_quotes_gpc off
+php_flag short_open_tag on
 
 # Turn on URL rewriting
 RewriteEngine On

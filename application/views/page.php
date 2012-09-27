@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" href="/img/iphone-icon.png" />
 
     <?php
-    if(Kohana::$environment == Kohana::PRODUCTION){ ?>
+    if(Kohana::$environment == Kohana::DEVELOPMENT){ ?>
         <link rel="stylesheet" href="/css/jquery.mobile-1.2.0-rc.2.min.css" />
         <link rel="stylesheet" href="/css/style.css" />
         <script src="/js/jquery-1.8.1.min.js"></script>
@@ -21,6 +21,7 @@
         <script src="/js/jquery.cookie.js"></script>
         <script src="/js/jquery.total-storage.min.js"></script>
         <script src="/js/jquery.mobile.search.contrib.js"></script>
+        <script src="/js/main.js"></script>
     <?php } else { ?>
         <link rel="stylesheet" href="/css/compiled.css" />
         <script src="/js/compiled.js"></script>
