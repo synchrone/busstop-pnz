@@ -1,4 +1,4 @@
-<div id="search" data-role="page">
+<div id="search" data-role="page" data-url="/">
 
 	<div data-role="header" data-theme="b">
 		<h1>When Bus ?</h1>

@@ -64,7 +64,7 @@ $(document).on("pageinit", "#search", function() {
                 results.html(data.results).listview('refresh');
 
                 standalone_ad.hide();
-                window.yandexMetrika.reachGoal('search',{query:query});
+                window.yandexMetrika.reachGoal('search',{search_query:query});
             });
         })
         .on('clear',default_list)
@@ -100,7 +100,7 @@ $(document).on("pagechanged", "#forecast", function() {
             $.totalStorage('favorite',
                 $.merge($.totalStorage('favorite') || [],[station_id])
             );
-            window.yandexMetrika.reachGoal('favorite',{station_name:station_name});
+            window.yandexMetrika.reachGoal('favorite',{favorite:station_name});
         },
         unset: function(){
             var favorite_ids = $.totalStorage('favorite');
@@ -125,7 +125,7 @@ $(document).on("pagechanged", "#forecast", function() {
         h.refresh.call($this);
     }).data('favorite_handlers').refresh.call(favorite);
 
-    window.yandexMetrika.reachGoal('forecast',{query:station_name});
+    window.yandexMetrika.reachGoal('forecast',{forecast_query:station_name});
 });
 
 $(document).on("pageinit", "#about", function() {
