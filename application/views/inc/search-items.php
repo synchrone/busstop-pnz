@@ -1,7 +1,11 @@
 <?php /** @var $items Model_Station[] */
 foreach($items as $station)
 {
-    printf('<li><a href="/forecast?id=%d&type=%s">%s (&rarr;%s)</a></li>',
+    printf('<li>
+        <a href="/forecast?id=%d&type=%s">
+           <span class="ui-li-content">%s</span><span class="ui-li-desc"> &rarr;%s</span>
+        </a>
+    </li>',
         $station->id,$station->type,
         $station->name,$station->heading);
 }
