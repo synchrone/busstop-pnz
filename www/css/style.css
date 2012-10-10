@@ -3,9 +3,6 @@
     max-width:24px;
     top: 10px;
 }
-.ui-li-desc {
+.zeromargin {
     margin: 0;
-}
-.ui-li-aside {
-    width: auto;
 }
