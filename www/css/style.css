@@ -3,6 +3,10 @@
     max-width:24px;
     top: 10px;
 }
+.ui-label {
+    color: #4C596E;
+    font-size: 14px;
+}
 .zeromargin {
     margin: 0;
 }
