@@ -81,8 +81,20 @@ $(document).on("pagechanged", "#forecast", function() {
     var station_id = page.data('station-id');
     var station_name = $(page.find('.station_name')).html();
 
-    var refresh = $(page.find('.refresh'))
-    .click(function(){
+    var refresh = $(page.find('.refresh'));
+
+    var timeToRefresh = 10;
+    var refreshTimer = $.timer(function(){
+        timeToRefresh--;
+        if(timeToRefresh == 0){
+            refresh.click();
+        }else{
+            $('.refresh_in').html(timeToRefresh-1);
+        }
+    },1000,true);
+
+    refresh.click(function(){
+        refreshTimer.stop();
         $.mobile.changePage(location.href, {
             allowSamePageTransition:true,
             reloadPage: true,
@@ -110,8 +122,16 @@ $(document).on("pagechanged", "#forecast", function() {
         refresh: function(){
             $this = $(this);
             var h = $this.data('favorite_handlers');
-            $this.html(h.is() ? 'Убрать из избранного' : 'В избранное')
-                .button('refresh');
+            if(h.is()){
+                $this
+                    .data('icon','minus')
+                    .html('Из избранного');
+            }else{
+                $this
+                    .data('icon','plus')
+                    .html('В избранное');
+            }
+            $this.button('refresh');
         }
     })
     .click(function(){

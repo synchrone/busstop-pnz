@@ -49,6 +49,7 @@
         <script src="/js/jquery.cookie.js"></script>
         <script src="/js/jquery.total-storage.min.js"></script>
         <script src="/js/jquery.mobile.search.contrib.js"></script>
+        <script src="/js/jquery.timer.js"></script>
         <script src="/js/main.js"></script>
     <?php } else { ?>
         <link rel="stylesheet" href="/css/compiled.css" />

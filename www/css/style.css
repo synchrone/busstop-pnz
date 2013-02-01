@@ -3,6 +3,10 @@
     max-width:24px;
     top: 10px;
 }
+.station_name{
+    margin-right: 0;
+    text-align: left;
+}
 .ui-label {
     color: #4C596E;
     font-size: 14px;
