@@ -82,9 +82,11 @@ $(document).on("pagechanged", "#forecast", function() {
     var station_name = $(page.find('.station_name')).html();
 
     var refresh = $(page.find('.refresh'));
-
     var timeToRefresh = 10;
-    var refreshTimer = $.timer(function(){
+    if(typeof(window.refreshTimer) != 'undefined'){
+        window.refreshTimer.stop();
+    }
+    window.refreshTimer = $.timer(function(){
         timeToRefresh--;
         if(timeToRefresh == 0){
             refresh.click();
