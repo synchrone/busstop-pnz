@@ -3,6 +3,10 @@
     max-width:24px;
     top: 10px;
 }
+.ui-listview .ui-li-route {
+    float: left;
+    width: 25px;
+}
 .station_name{
     margin-right: 0;
     text-align: left;
