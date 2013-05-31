@@ -15,6 +15,8 @@ class Controller_Main extends Controller
             //wrap in normal page for non-ajax responses with default content-type intact
             $this->response->body(new Page($this->response->body()));
         }
+
+        $this->check_cache(); //apply body-hash e-taggin'
     }
     public function json_response($data)
     {
@@ -35,28 +37,28 @@ class Controller_Main extends Controller
 
     public function action_index()
    	{
-       $r = $this->request;
-       $content = View::factory('inc/default-items')
+        $r = $this->request;
+        $content = View::factory('inc/default-items')
            ->set('favorite',
                Model_Station::by_id($r->query('favorite'))
            );
 
-       if(
+        if(
            ($lat = $r->query('latitude')) &&
            ($lon = $r->query('longitude')) &&
            ($accuracy = $r->query('accuracy'))
-       ){
+        ){
            $content->set('nearest',
                Model_Station::nearest(
                    $lat, $lon, $accuracy
                )
            );
-       }
-       if(!$this->request->is_ajax() || !count($this->request->query())){
+        }
+        if(!$this->request->is_ajax() || !count($this->request->query())){
            $content = View::factory('search',array('content'=>$content));
-       }
+        }
        $this->html_response($content);
-   }
+    }
 
     public function action_search_stations()
     {

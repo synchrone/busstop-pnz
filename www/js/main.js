@@ -42,8 +42,14 @@ $(document).on("pageinit", "#search", function() {
 
     var default_list = function(){
         didyoumean.hide();
-        get_geolocation(function(c){
-            results.load('/?'+ $.param($.extend(c,{favorite:$.totalStorage('favorite') || []})),function(){
+        get_geolocation(function(geo){
+            var request = {favorite: $.totalStorage('favorite') || []};
+
+            if(typeof geo.error == 'undefined'){
+                request = $.extend(request,geo);
+            }
+
+            results.load('/?'+ $.param(request),function(){
                 results.listview('refresh');
             })
         });

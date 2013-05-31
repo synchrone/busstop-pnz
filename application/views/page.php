@@ -9,6 +9,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <!-- <link rel="apple-touch-startup-image" href="/img/startup.jpg">-->
+    <link rel="icon" href="/img/iphone-icon.png" />
+    <link rel="shortcut icon" href="/img/iphone-icon.png" />
     <link rel="apple-touch-icon" href="/img/iphone-icon.png" />
 
     <!-- Yandex.Metrika counter is here to set w.yandexMetrika before compiled.js is executed -->
