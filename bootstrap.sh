@@ -1,3 +1,4 @@
+#!/bin/bash
 DOCROOT=www
 APPPATH=application
 GCLOSURE="compilers/compiler.jar"
