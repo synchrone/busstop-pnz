@@ -75,6 +75,10 @@ if (isset($_SERVER['KOHANA_ENV']))
 	Kohana::$environment = constant('Kohana::'.strtoupper(Arr::get($_SERVER,'KOHANA_ENV','production')));
 }
 
+if(Kohana::$environment != Kohana::DEVELOPMENT){
+    Kohana_Exception::$error_view = 'error';
+}
+
 /**
  * Initialize Kohana, setting the default options.
  *
