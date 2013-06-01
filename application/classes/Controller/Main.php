@@ -38,10 +38,13 @@ class Controller_Main extends Controller
     public function action_index()
    	{
         $r = $this->request;
-        $content = View::factory('inc/default-items')
-           ->set('favorite',
-               Model_Station::by_id($r->query('favorite'))
-           );
+        $content = View::factory('inc/default-items');
+
+        if($favorite_ids = $r->query('favorite')){
+            $content->set('favorite',
+                Model_Station::by_id($favorite_ids)
+            );
+        }
 
         if(
            ($lat = $r->query('latitude')) &&
@@ -54,10 +57,12 @@ class Controller_Main extends Controller
                )
            );
         }
-        if(!$this->request->is_ajax() || !count($this->request->query())){
+
+        if(!$this->request->is_ajax()){
            $content = View::factory('search',array('content'=>$content));
         }
-       $this->html_response($content);
+
+        $this->html_response($content);
     }
 
     public function action_search_stations()

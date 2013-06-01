@@ -161,21 +161,23 @@ $(document).on("pageinit", "#about", function() {
     .on('expand',function()
     {
         var that = this;
-        get_geolocation(function(){
-            var geo_debug = $(that).find('p');
-            navigator.geolocation.getCurrentPosition(function(position){
-                var c = position.coords;
+        get_geolocation(function(c)
+            {
+                if(typeof с.error != 'undefined'){return;}
+
+                var geo_debug = $(that).find('p');
                 var text = '<p>Широта: ' + c.latitude + '</p>'
                          + '<p>Долгота: ' + c.longitude + '</p>';
-                text += c.accuracy ? '<p>Точность: ±' + c.accuracy + ' метров</p>' : '';
-                text += c.altitude ? '<p>Высота: ' + c.altitude + '</p>' : '';
-                text += c.altitudeAccuracy ? '<p>Точность высоты: ±' + c.altitudeAccuracy + ' метров</p>' : '';
-                text += c.speed ? '<p>Скорость: ' + c.speed + '</p>' : '';
-                text += c.heading ? '<p>Направление: ' + c.heading + '</p>' : '';
-                text += c.timestamp ? '<p>Последнее определение: ' + new Date(position.timestamp).toString() + '</p>' : '';
-                geo_debug.html(text);
-            },null,{enableHighAccuracy:true,timeout:30000,maximumAge:10000});
-        });
+                    text += c.accuracy ? '<p>Точность: ±' + c.accuracy + ' метров</p>' : '';
+                    text += c.altitude ? '<p>Высота: ' + c.altitude + '</p>' : '';
+                    text += c.altitudeAccuracy ? '<p>Точность высоты: ±' + c.altitudeAccuracy + ' метров</p>' : '';
+                    text += c.speed ? '<p>Скорость: ' + c.speed + '</p>' : '';
+                    text += c.heading ? '<p>Направление: ' + c.heading + '</p>' : '';
+                    text += c.timestamp ? '<p>Последнее определение: ' + new Date(position.timestamp).toString() + '</p>' : '';
+                    geo_debug.html(text);
+            },
+            null,{enableHighAccuracy:true,timeout:30000,maximumAge:10000}
+        );
     });
 });
 
