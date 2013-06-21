@@ -16,6 +16,7 @@ class Model_Station extends Model
 
     const MATCH_ALL = 'match_all';
     const MATCH_ANY = 'match_any';
+    const ID_IN_ARRAY = 'id_in_array';
 
     //TODO: Variable search radius depending on accuracy
     const RADIUS = 0.35;
@@ -111,5 +112,29 @@ class Model_Station extends Model
             }
         }
         return false;
+    }
+
+    protected function id_in_array($stations){
+        return in_array($this->id, $stations);
+    }
+
+    protected static function sort_by_name($stations)
+    {
+        uasort($stations,function($a,$b)
+        {
+            if($a->name == $b->name){ return 0; }
+            return ($a->name < $b->name) ? -1 : 1;
+        });
+        return $stations;
+    }
+
+    public static function popular(){
+        if($stations = Cache::instance()->get('popular_stations'))
+        {
+            return Model_Station::sort_by_name(
+                Model_Station::search($stations, Model_Station::ID_IN_ARRAY)
+            );
+        }
+        return array();
     }
 }

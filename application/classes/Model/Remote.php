@@ -9,8 +9,12 @@ class Model_Remote extends Model
 
     protected static function request($url,$query_params = array())
     {
+        if(strpos($url,'://') === false){
+            $url = self::BASE_URL.$url;
+        }
+
         /** @var $response Response */
-        $response = Request::factory(self::BASE_URL.$url)
+        $response = Request::factory($url)
             ->headers('Cache-Control','no-cache')
             ->headers('Pragma','no-cache')
             ->query(array('city' => self::CITY) + $query_params)
@@ -106,5 +110,27 @@ class Model_Remote extends Model
             $forecast[] = Model_Forecast::factory($vehicle['@attributes']);
         }
         return $forecast;
+    }
+
+    public static function popular_stations($query = array()){
+        $report = Model_Remote::xml_request('http://api-metrika.yandex.ru/stat/content/user_vars', $query + array
+        (
+            'id' => Kohana::$config->load('metrika.id'),
+            'goal_id' => Kohana::$config->load('metrika.popstations_goal_id'),
+            'table_mode' => 'tree',
+            //per_page' => 7, per_page doesn't work as expected with tree_table_mode
+        ));
+        $report->registerXPathNamespace('y','http://api.yandex.ru/metrika/');
+
+        $stations = $report->xpath("//y:row[descendant::y:name[.='forecast_query_json']]/y:chld/y:chld/y:name");
+
+        $stations = array_map(function($v){
+            if($v = json_decode((string)$v)){
+                return $v->id;
+            }
+            return null;
+        }, $stations);
+
+        return array_filter($stations);
     }
 }

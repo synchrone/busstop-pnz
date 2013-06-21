@@ -21,7 +21,7 @@
     (function (d, w, c) {
         (w[c] = w[c] || []).push(function () {
             try {
-                w.yandexMetrika = w.yaCounter16755400 = new Ya.Metrika({id:16755400, accurateTrackBounce:true, trackHash:true});
+                w.yandexMetrika = w.yaCounter16755400 = new Ya.Metrika({id: <?=$metrika_id?>, accurateTrackBounce:true, trackHash:true});
             } catch (e) {
             }
         });

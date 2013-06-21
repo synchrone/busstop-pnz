@@ -44,10 +44,14 @@ $(document).on("pageinit", "#search", function() {
         didyoumean.hide();
         get_geolocation(function(geo){
             var request = {favorite: $.totalStorage('favorite') || []};
+            var has_geo = false;
 
             if(typeof geo.error == 'undefined'){
                 request = $.extend(request,geo);
+                has_geo = true;
             }
+
+            window.yandexMetrika.params({has_geo:has_geo});
 
             results.load('/?'+ $.param(request),function(){
                 results.listview('refresh');
@@ -153,7 +157,7 @@ $(document).on("pagechanged", "#forecast", function() {
         h.refresh.call($this);
     }).data('favorite_handlers').refresh.call(favorite);
 
-    window.yandexMetrika.reachGoal('forecast',{forecast_query:station_name});
+    window.yandexMetrika.reachGoal('forecast',{forecast_query:station_name, forecast_query_json: '{"id":'+station_id+', "name":"'+station_name+'"}'});
 });
 
 $(document).on("pageinit", "#about", function() {

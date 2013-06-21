@@ -38,12 +38,10 @@ class Controller_Main extends Controller
     public function action_index()
    	{
         $r = $this->request;
-        $content = View::factory('inc/default-items');
+        $content = array();
 
         if($favorite_ids = $r->query('favorite')){
-            $content->set('favorite',
-                Model_Station::by_id($favorite_ids)
-            );
+            $content['favorite'] = Model_Station::by_id($favorite_ids);
         }
 
         if(
@@ -51,12 +49,17 @@ class Controller_Main extends Controller
            ($lon = $r->query('longitude')) &&
            ($accuracy = $r->query('accuracy'))
         ){
-           $content->set('nearest',
-               Model_Station::nearest(
-                   $lat, $lon, $accuracy
-               )
-           );
+           $content['nearest'] = Model_Station::nearest($lat, $lon, $accuracy);
         }
+
+        if(
+           count(Arr::get($content,'nearest', array())) == 0 &&
+           count(Arr::get($content,'favorite', array())) == 0
+        ){
+            $content['popular'] = Model_Station::popular();
+        }
+
+        $content = View::factory('inc/default-items')->set($content);
 
         if(!$this->request->is_ajax()){
            $content = View::factory('search',array('content'=>$content));
@@ -69,7 +72,7 @@ class Controller_Main extends Controller
     {
         $q = trim($this->request->query('q'));
         $result = array(
-            'stations' => Model_Station::search($q,Model_Station::MATCH_ALL),
+            'stations' => Model_Station::search($q, Model_Station::MATCH_ALL),
             'query' => $q,
             'fixed_query' => null
         );

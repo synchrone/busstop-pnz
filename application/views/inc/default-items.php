@@ -10,5 +10,8 @@ if(isset($favorite) && count($favorite)){
     printf('<li data-role="list-divider" data-icon="star">Избранные</li>');
     echo View::factory('inc/search-items')->set('items',$favorite);
 }
-
+if(isset($popular) && count($popular)){
+    printf('<li data-role="list-divider" data-icon="star">Популярные</li>');
+    echo View::factory('inc/search-items')->set('items',$popular);
+}
 ?>
