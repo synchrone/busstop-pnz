@@ -14,7 +14,7 @@
 
     <fieldset class="ui-grid-a">
         <div class="ui-block-a">
-            <button class="favorite" data-mini="true" data-icon="minus" data-iconpos="left"></button>
+            <button class="favorite" data-mini="true" data-iconpos="left"></button>
         </div>
         <div class="ui-block-b">
             <button class="refresh" data-mini="true" data-icon="refresh" data-iconpos="right">Обновление <span class="refresh_in">9</span>c.</button>

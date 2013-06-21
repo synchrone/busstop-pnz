@@ -132,11 +132,11 @@ $(document).on("pagechanged", "#forecast", function() {
             var h = $this.data('favorite_handlers');
             if(h.is()){
                 $this
-                    .data('icon','minus')
+                    .buttonMarkup({ icon: "minus" })
                     .html('Из избранного');
             }else{
                 $this
-                    .data('icon','plus')
+                    .buttonMarkup({ icon: "plus" })
                     .html('В избранное');
             }
             $this.button('refresh');
