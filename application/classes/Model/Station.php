@@ -3,6 +3,7 @@
  * @property int $type
  * @property int $id
  * @property string $name
+ * @property string $descr
  * @property int $lon0
  * @property int $lat0
  * @property int $lon1
@@ -22,12 +23,18 @@ class Model_Station extends Model
     const RADIUS = 0.35;
     const MIN_ACCURACY = 1500;
 
+    protected static $_stations;
     /**
      * @return Model_Station[]
      */
     protected static function fetch()
     {
-        return Cache::instance()->get('stations');
+        //Store them for the run-time
+        if(self::$_stations === null)
+        {
+            self::$_stations = Cache::instance()->get('stations');;
+        }
+        return self::$_stations;
     }
 
     public static function search($query,$match_type)

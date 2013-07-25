@@ -102,12 +102,22 @@ class Model_Remote extends Model
         return $data;
     }
 
-    public static function forecast($query = array()){
+    public static function station_forecast($query = array()){
         $xml_vehicles = self::xml_request('getStationForecasts.php',$query);
         $forecast = array();
         foreach($xml_vehicles->children() as $vehicle){
             $vehicle= (array)$vehicle;
-            $forecast[] = Model_Forecast::factory($vehicle['@attributes']);
+            $forecast[] = Model_Forecast_Vehicle::factory($vehicle['@attributes']);
+        }
+        return $forecast;
+    }
+
+    public static function vehicle_forecast($query = array()){
+        $xml_stations = self::xml_request('getVehicleForecasts.php',$query);
+        $forecast = array();
+        foreach($xml_stations->children() as $stations_forecast){
+            $stations_forecast = (array)$stations_forecast;
+            $forecast[] = Model_Forecast_Station::factory($stations_forecast['@attributes']);
         }
         return $forecast;
     }

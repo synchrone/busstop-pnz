@@ -1,3 +1,9 @@
 #!/usr/bin/env php
 <?php
-include __DIR__.DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'index.php';
+include __DIR__.DIRECTORY_SEPARATOR.'env.php';
+
+Log::$write_on_add = true;
+
+class_exists('Minion_Task') OR die('Please enable the Minion module for CLI support.');
+
+Minion_Task::factory(Minion_CLI::options())->execute();

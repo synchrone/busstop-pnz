@@ -114,6 +114,11 @@ $(document).on("pagechanged", "#forecast", function() {
         });
     });
 
+    if(!station_id) //not valid for a vehicle-forecast
+    {
+        return;
+    }
+
     //there must be a better way ...
     var favorite = $(page.find('.favorite'));
     favorite.data('favorite_handlers',{
@@ -157,7 +162,10 @@ $(document).on("pagechanged", "#forecast", function() {
         h.refresh.call($this);
     }).data('favorite_handlers').refresh.call(favorite);
 
-    window.yandexMetrika.reachGoal('forecast',{forecast_query:station_name, forecast_query_json: '{"id":'+station_id+', "name":"'+station_name+'"}'});
+    window.yandexMetrika.reachGoal('forecast',{forecast_query:station_name,
+        forecast_query_json: '{"id":'+station_id+', "name":"'+station_name+'"}'
+    });
+
 });
 
 $(document).on("pageinit", "#about", function() {

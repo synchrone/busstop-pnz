@@ -2,8 +2,6 @@
 
 class Controller_Main extends Controller
 {
-    const CITY = 'penza';
-
     public function before()
     {
         $this->response->headers('Content-Type','text/html');
@@ -18,22 +16,7 @@ class Controller_Main extends Controller
 
         $this->check_cache(); //apply body-hash e-taggin'
     }
-    public function json_response($data)
-    {
-        return $this->response
-            ->headers('Content-Type','application/json')
-            ->body(json_encode($data));
-    }
 
-    /**
-     * @param $data
-     * @return Response
-     */
-    public function html_response($data){
-        return $this->response
-            ->headers('Content-Type','text/html')
-            ->body($data);
-    }
 
     public function action_index()
    	{
@@ -65,7 +48,7 @@ class Controller_Main extends Controller
            $content = View::factory('search',array('content'=>$content));
         }
 
-        $this->html_response($content);
+        $this->response->html($content);
     }
 
     public function action_search_stations()
@@ -92,24 +75,41 @@ class Controller_Main extends Controller
         $result['results'] = View::factory('inc/search-items')
             ->set('items',$result['stations'])->render();
         unset($result['stations']);
-        $this->json_response($result);
+        $this->response->json($result);
     }
 
-    public function action_forecast()
+    public function action_station_forecast()
     {
-        $this->html_response(
-            View::factory('forecast')
-            ->set('forecast',
-                Model_Remote::forecast($this->request->query())
+        $this->response
+            ->nocache()
+            ->html(
+                View::factory('station_forecast')
+                ->set('forecast',
+                    Model_Remote::station_forecast($this->request->query())
+                )
+                ->set('station', Model_Station::by_id($this->request->query('id'),true))
             )
-            ->set('station',Model_Station::by_id($this->request->query('id'),true))
-        )
-        ->headers('Cache-Control','no-cache') //HTTP/1.1
-        ->headers('Expires','Thu, 01 Dec 1994 16:00:00 GMT') //HTTP/1.0 style
         ;
     }
 
-    public function action_about(){
-        $this->html_response(View::factory('about'));
+    public function action_vehicle_forecast()
+    {
+        $this->response
+            ->nocache()
+            ->html(
+                View::factory('vehicle_forecast')
+                ->set('forecast',
+                    Model_Remote::vehicle_forecast(
+                        Arr::extract($this->request->query(), array('id','type'))
+                    )
+                )
+                ->set('title', $this->request->query('title'))
+            )
+        ;
+    }
+
+    public function action_about()
+    {
+        $this->response->html(View::factory('about'));
     }
 } // End Welcome

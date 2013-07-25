@@ -15,7 +15,10 @@ class Task_Fetch extends Minion_Task
         $cache = Cache::instance();
 
         Minion_CLI::write('Fetching routes...');
+
         $routes = Model_Remote::routes();
+        $cache->set('routes',$routes,self::CACHE_LIFETIME);
+
         $stations = array();
 
         foreach($routes as $route)

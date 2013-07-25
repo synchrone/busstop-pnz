@@ -11,5 +11,24 @@
  */
 class Model_Route extends Model
 {
+    /**
+     * @return Model_Route[]
+     */
+    protected static function fetch()
+    {
+        return Cache::instance()->get('routes');
+    }
 
+    public static function by_id($id)
+    {
+        foreach(self::fetch() as $route)
+        {
+            if($route->id1 == $id || $route->id2 == $id)
+            {
+                return $route;
+            }
+        }
+
+        return null;
+    }
 }

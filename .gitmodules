@@ -6,4 +6,4 @@
 	url = http://github.com/kohana/cache.git
 [submodule "modules/minion"]
 	path = modules/minion
-	url = http://github.com/kohana/minion.git
+	url = http://github.com/synchrone/minion.git

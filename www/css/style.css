@@ -6,6 +6,9 @@
 .ui-listview .ui-li-route {
     float: left;
 }
+.ui-listview .ui-li-station {
+    float: none;
+}
 .station_name{
     margin-right: 0;
     text-align: left;
