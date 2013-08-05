@@ -28,4 +28,7 @@ chmod g+w $APPPATH/cache $APPPATH/logs
 echo Fetching routes...
 ./minion fetch
 
+if [ ! -z "$METRIKA_TOKEN" ]; then
+    ./minion popstations
+fi
 echo All done!
