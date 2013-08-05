@@ -1,9 +1,9 @@
 <div id="search" data-role="page" data-url="/">
 
 	<div data-role="header" data-theme="b">
-		<h1>When is the Bus?</h1>
         <a href="/about" data-role="button" data-icon="info"
-           class="ui-btn-right info-button" data-rel="dialog">Инфо</a>
+           class="ui-btn-left info-button" data-rel="dialog">Инфо</a>
+		<h1>When is the Bus?</h1>
 	</div>
 
 	<div data-role="content">

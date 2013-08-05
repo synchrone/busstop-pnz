@@ -3,10 +3,10 @@
     max-width:24px;
     top: 10px;
 }
-.ui-listview .ui-li-route {
-    float: left;
+.ui-listview .ui-li-desc{
+    display: inline;
 }
-.ui-listview .ui-li-station {
+.ui-listview .ui-li-content{
     float: none;
 }
 .station_name{
@@ -19,4 +19,21 @@
 }
 .zeromargin {
     margin: 0;
+}
+
+/*div.ui-page[data-role=page] {
+    width: 320px;
+}*/
+
+.ui-header .ui-title {
+    margin-left: auto;
+    margin-right: auto;
+    display: inline-block;
+    position: relative;
+    top: 3px;
+}
+
+.ui-header a.ui-btn-left{
+    position: relative;
+    margin-right: 15px;
 }
