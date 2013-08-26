@@ -35,5 +35,6 @@
 
 .ui-header a.ui-btn-left{
     position: relative;
+    top: 0px;
     margin-right: 15px;
 }
