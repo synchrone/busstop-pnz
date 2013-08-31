@@ -76,6 +76,31 @@ class Model_Remote extends Model
     }
 
     /**
+     * @param Model_Route[] $routes
+     * @return Model_Vehicle[]
+     */
+    public static function vehicles(array $routes = null){
+        if($routes === null){
+            $routes = self::routes();
+        }
+
+        $ids = array();
+        foreach($routes as $route){
+            $ids[] = sprintf('%d;0',$route->id1,$route->id2);
+        }
+        $ids = implode('|',$ids);
+
+        $xml_vehicles = self::xml_request('getRoutesVehicles.php',array('ids'=>$ids));
+
+        $forecast = array();
+        foreach($xml_vehicles->children() as $vehicle){
+            $vehicle= (array)$vehicle;
+            $forecast[] = Model_Vehicle::factory($vehicle['@attributes']);
+        }
+        return $forecast;
+    }
+
+    /**
      * @param $route_id
      * @param $heading
      * @return Model_Station[]

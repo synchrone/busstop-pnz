@@ -11,7 +11,7 @@
  * @property int $end
  * @property string $heading
  */
-class Model_Station extends Model
+class Model_Station extends Model_Geo
 {
     public $heading;
 
@@ -88,10 +88,6 @@ class Model_Station extends Model
         return $stations;
     }
 
-
-    protected function floatify($buspnz_latlon){
-        return (float)(substr($buspnz_latlon,0,2).'.'.substr($buspnz_latlon,2));
-    }
     public function lat(){
         return $this->floatify($this->lat0);
     }
