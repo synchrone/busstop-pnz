@@ -33,8 +33,9 @@ class Task_Watch extends Minion_Task
 
             $vehicles = Model_Remote::vehicles();
 
+            $time = new DateTime();
             Minion_CLI::write_replace(
-                sprintf('Got vehicles on %s!', (new DateTime())->format(DateTime::ATOM))
+                sprintf('Got vehicles on %s!', $time->format(DateTime::ATOM))
                 ,true
             );
 
@@ -61,11 +62,12 @@ class Task_Watch extends Minion_Task
     {
         foreach($this->_collectors as $collector)
         {
-            $collector($state,$vehicles);
+            call_user_func($collector,$state,$vehicles);
         }
     }
 
-    protected function csv_writer($state, $filename, array $data){
+    protected function csv_writer($state, $filename, array $data)
+    {
         static $fh;
 
         switch($state)
@@ -91,28 +93,50 @@ class Task_Watch extends Minion_Task
      */
     protected function counter($state, $vehicles)
     {
-        $vcount = count($vehicles);
-        $this->csv_writer($state, 'counter.csv', array(time(), $vcount));
+        $filename = 'counter.csv';
+        if($state != self::UPDATE)
+        {
+            $this->csv_writer($state, $filename, array('time','rtype','count'));
+            return;
+        }
+
+        $vcount = array();
+        foreach($vehicles as $vehicle)
+        {
+            if(!isset($vcount[$vehicle->rtype])){
+                $vcount[$vehicle->rtype] = 0;
+            }
+            $vcount[$vehicle->rtype]++;
+        }
+        foreach($vcount as $rtype=>$count)
+        {
+            $this->csv_writer($state, $filename, array(time(), $rtype, $count));
+        }
     }
 
     /**
      * @param $state int
      * @param $vehicles Model_Vehicle[]
      */
-    protected function mapper($state, $vehicles){
+    protected function mapper($state, $vehicles)
+    {
         static $last_seen;
-        if($last_seen === null){
+        if($last_seen === null)
+        {
             $last_seen = array();
         }
 
         $filename = 'mapper.csv';
-        if($state != self::UPDATE){
+        if($state != self::UPDATE)
+        {
             $this->csv_writer($state, $filename, array('rtype','lat','lon','lasttime'));
             return;
         }
 
-        foreach($vehicles as $vehicle){
-            if(Arr::get($last_seen,$vehicle->id) >= $vehicle->lasttime()->getTimestamp()){ //same record, not stored in csv
+        foreach($vehicles as $vehicle)
+        {
+            if(Arr::get($last_seen,$vehicle->id) >= $vehicle->lasttime()->getTimestamp())
+            { //same record, not stored in csv
                 continue;
             }
 
