@@ -95,6 +95,17 @@ class Model_Station extends Model_Geo
         return $this->floatify($this->lon0);
     }
 
+    public function passing_routes()
+    {
+        if($routes_thru_stations = Cache::instance()->get('routes_thru_stations')){
+            return array_map(function($route_id)
+            {
+                return Model_Route::by_id($route_id);
+            }, $routes_thru_stations[$this->id]);
+        }
+        return array();
+    }
+
     protected function match_all($query)
     {
         foreach(Text::split_words($query) as $word)

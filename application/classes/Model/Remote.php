@@ -76,21 +76,26 @@ class Model_Remote extends Model
     }
 
     /**
-     * @param Model_Route[] $routes
+     * @param Model_Route[]|array|string $routes
      * @return Model_Vehicle[]
      */
-    public static function vehicles(array $routes = null){
-        if($routes === null){
+    public static function vehicles($routes = null){
+        if(empty($routes)){
             $routes = self::routes();
         }
 
-        $ids = array();
-        foreach($routes as $route){
-            $ids[] = sprintf('%d;0',$route->id1,$route->id2);
+        if(is_array($routes)){
+            if(current($routes) instanceof Model_Route){
+                $ids = array();
+                foreach($routes as $route){
+                    $ids[] = sprintf('%d;0',$route->id1,$route->id2);
+                }
+                $routes = $ids; unset($ids);
+            }
+            $routes = implode('|',$routes);
         }
-        $ids = implode('|',$ids);
 
-        $xml_vehicles = self::xml_request('getRoutesVehicles.php',array('ids'=>$ids));
+        $xml_vehicles = self::xml_request('getRoutesVehicles.php',array('ids'=>$routes));
 
         $forecast = array();
         foreach($xml_vehicles->children() as $vehicle){

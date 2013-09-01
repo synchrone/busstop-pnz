@@ -80,15 +80,24 @@ class Controller_Main extends Controller
 
     public function action_station_forecast()
     {
+        $forecast = Model_Remote::station_forecast($this->request->query());
+        $station = Model_Station::by_id($this->request->query('id'),true);
+
+        $view = View::factory('station_forecast')
+            ->set('forecast', $forecast)
+            ->set('station', $station)
+            ->set('vehicles_enroute', null);
+
+        //OK, no forecast, how about vehicles en route ?
+        if(empty($forecast) && ($passing_routes = $station->passing_routes()))
+        {
+            $vehicles = Model_Remote::vehicles($passing_routes);
+            $view->set('vehicles_enroute', count($vehicles));
+        }
+
         $this->response
             ->nocache()
-            ->html(
-                View::factory('station_forecast')
-                ->set('forecast',
-                    Model_Remote::station_forecast($this->request->query())
-                )
-                ->set('station', Model_Station::by_id($this->request->query('id'),true))
-            )
+            ->html($view)
         ;
     }
 

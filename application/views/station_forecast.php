@@ -1,6 +1,9 @@
 <?php
-    /** @var $forecast Model_Forecast_Vehicle[] */
-    /** @var $station Model_Station */
+/**
+ * @var $forecast Model_Forecast_Vehicle[]
+ * @var $station Model_Station
+ * @var $vehicles_enroute int Enroute vehicle count
+ */
 ?><div id="forecast" data-role="page" data-station-id="<?=$station->id?>">
     <div data-role="header"  data-theme="b">
         <a href="#" data-rel="back" data-icon="arrow-l">Назад</a>
@@ -23,6 +26,12 @@
                         $item->arrive_time()
                     );
                 }
+
+                if($vehicles_enroute === 0){ ?>
+                <div class="ui-body ui-body-e">
+                    Нет проходящего транспорта на маршрутах. <!--a href="tel:000000">Позвонить в такси ?</a-->
+                </div>
+            <?  }
             ?>
         </ul>
     </div>
