@@ -119,6 +119,21 @@ class Controller_Main extends Controller
 
     public function action_about()
     {
-        $this->response->html(View::factory('about'));
+        $view = View::factory('about');
+        $rtypes = Model_Remote::route_types();
+
+        $vcounts = array_combine(
+            Arr::opluck($rtypes,'typeShName'),
+            array_fill(0,count($rtypes),0)
+        );
+
+        foreach(Model_Remote::vehicles() as $vehicle){
+            $vcounts[$vehicle->rtype]++;
+        }
+
+        $view
+            ->set('vcounts', $vcounts)
+            ->set('rtypes', $rtypes);
+        $this->response->html($view);
     }
 } // End Welcome

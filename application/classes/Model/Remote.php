@@ -27,6 +27,13 @@ class Model_Remote extends Model
         return $response->body();
 
     }
+
+    /**
+     * @param $url
+     * @param array $query_params
+     * @return stdClass[]|stdClass
+     * @throws Kohana_Exception
+     */
     protected static function json_request($url,$query_params = array())
     {
         $json = self::request($url,$query_params);
@@ -50,6 +57,13 @@ class Model_Remote extends Model
                 array(':xml'=>$xml, ':url' => $url.'?'.http_build_query($query_params)));
         }
         return $data;
+    }
+
+    /**
+     * @return Model_Route_Type[]
+     */
+    public static function route_types(){
+        return self::json_request('searchAllRouteTypes.php');
     }
 
     /**

@@ -32,3 +32,12 @@ class Model_Route extends Model
         return null;
     }
 }
+
+/**
+ * @property int $typeId
+ * @property string typeName
+ * @property string typeShName (А, Т, М)
+ */
+class Model_Route_Type extends Model{
+
+}
