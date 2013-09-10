@@ -28,8 +28,8 @@ class Controller_Main extends Controller
         }
 
         if(
-           ($lat = $r->query('latitude')) &&
-           ($lon = $r->query('longitude')) &&
+           ($lat = (float)$r->query('latitude')) &&
+           ($lon = (float)$r->query('longitude')) &&
            ($accuracy = $r->query('accuracy'))
         ){
            $content['nearest'] = Model_Station::nearest($lat, $lon, $accuracy);

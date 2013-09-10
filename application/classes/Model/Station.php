@@ -53,14 +53,13 @@ class Model_Station extends Model_Geo
     {
         if($accuracy > self::MIN_ACCURACY){ return array();}
 
-        $loc = array('lat'=>(float)$lat,'lon'=>(float)$lon);
         $result = array();
 
-        foreach(self::fetch() as /** @var Model_Station $station */ $station)
+        foreach(self::fetch() as $station)
         {
             $miss_distance = sqrt(
-                sqrt(abs($station->lat() - $loc['lat'])) +
-                sqrt(abs($station->lon() - $loc['lon']))
+                sqrt(abs($station->lat() - $lat)) +
+                sqrt(abs($station->lon() - $lon))
             );
             $inside = $miss_distance <= self::RADIUS;
             if($inside){
@@ -77,7 +76,7 @@ class Model_Station extends Model_Geo
         if(empty($id)){return array();}
 
         $stations = array();
-        foreach(self::fetch() as /** @var $station Model_Station */ $station)
+        foreach(self::fetch() as $station)
         {
             if(in_array($station->id,$id))
             {

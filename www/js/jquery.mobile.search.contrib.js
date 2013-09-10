@@ -1,19 +1,25 @@
 //textinput custom event
 $(document) //hi iphone
-    .on('keyup','input.search',function(){
-        var timeout = $(this).data('timeout');
-        if(typeof timeout == 'undefined'){return;}
+    .on('keyup','input.search',function()
+    {
+        var $this = $(this);
+        var timeout = $this.data('timeout');
+        var minlength = $this.data('minlength') || 3;
+
+        if($this.val().length < minlength ||
+           typeof timeout == 'undefined'
+        ){return;}
 
         if(typeof this.searchTimeout != 'undefined'){
             clearTimeout(this.searchTimeout);
             delete this.searchTimeout;
         }
-        var that = this;
+
         this.searchTimeout = setTimeout(function(){
-            if($(that).val() !==''){
-                $(that).trigger('textinput');
+            if($this.val() !==''){
+                $this.trigger('textinput');
             }else{
-                $(that).trigger('clear');
+                $this.trigger('clear');
             }
         },timeout);
     })

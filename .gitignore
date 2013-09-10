@@ -9,3 +9,5 @@ kohana_release
 nbproject
 build
 .idea
+www/css/compiled.css
+www/js/compiled.js
