@@ -1,9 +1,9 @@
 [submodule "system"]
 	path = system
-	url = http://github.com/kohana/core.git
+	url = https://github.com/kohana/core.git
 [submodule "modules/cache"]
 	path = modules/cache
-	url = http://github.com/kohana/cache.git
+	url = https://github.com/kohana/cache.git
 [submodule "modules/minion"]
 	path = modules/minion
-	url = http://github.com/synchrone/minion.git
+	url = https://github.com/synchrone/minion.git
