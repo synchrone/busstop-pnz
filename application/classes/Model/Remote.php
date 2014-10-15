@@ -5,7 +5,7 @@
 class Model_Remote extends Model
 {
     const CITY = 'penza';
-    const BASE_URL = 'http://83.222.106.126/php/';
+    const BASE_URL = 'http://58bus.ru/php/';
 
     protected static function request($url,$query_params = array())
     {
