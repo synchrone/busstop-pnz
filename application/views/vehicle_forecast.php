@@ -9,7 +9,7 @@
     </div>
     <div data-role="content">
         <ul class="forecast" data-role="listview" data-inset="true">
-            <?
+            <?php
                 foreach($forecast as $item)
                 {
                     $station = $item->get_station();

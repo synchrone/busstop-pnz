@@ -4,17 +4,11 @@
  * @property int $id
  * @property string $name
  * @property string $descr
- * @property int $lon0
- * @property int $lat0
- * @property int $lon1
- * @property int $lat1
- * @property int $end
- * @property string $heading
+ * @property int $lng
+ * @property int $lat
  */
 class Model_Station extends Model_Geo
 {
-    public $heading;
-
     const MATCH_ALL = 'match_all';
     const MATCH_ANY = 'match_any';
     const ID_IN_ARRAY = 'id_in_array';
@@ -70,7 +64,12 @@ class Model_Station extends Model_Geo
         return $result;
     }
 
-    public static function by_id($id,$single=false)
+    /**
+     * @param $id
+     * @param bool $single
+     * @return Model_Station
+     */
+    public static function by_id($id, $single=false)
     {
         $id = (array)$id;
         if(empty($id)){return array();}
@@ -88,21 +87,10 @@ class Model_Station extends Model_Geo
     }
 
     public function lat(){
-        return $this->floatify($this->lat0);
+        return $this->floatify($this->lat);
     }
     public function lon(){
-        return $this->floatify($this->lon0);
-    }
-
-    public function passing_routes()
-    {
-        if($routes_thru_stations = Cache::instance()->get('routes_thru_stations')){
-            return array_map(function($route_id)
-            {
-                return Model_Route::by_id($route_id);
-            }, $routes_thru_stations[$this->id]);
-        }
-        return array();
+        return $this->floatify($this->lng);
     }
 
     protected function match_all($query)
@@ -116,6 +104,7 @@ class Model_Station extends Model_Geo
         }
         return true;
     }
+
     protected function match_any($query){
         foreach(Text::split_words($query) as $word)
         {

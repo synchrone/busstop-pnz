@@ -81,7 +81,7 @@ class Controller_Main extends Controller
     public function action_station_forecast()
     {
         $forecast = Model_Remote::station_forecast($this->request->query());
-        $station = Model_Station::by_id($this->request->query('id'),true);
+        $station = Model_Station::by_id($this->request->query('sid'), true);
 
         $view = View::factory('station_forecast')
             ->set('forecast', $forecast)
@@ -89,11 +89,12 @@ class Controller_Main extends Controller
             ->set('vehicles_enroute', null);
 
         //OK, no forecast, how about vehicles en route ?
-        if(empty($forecast) && ($passing_routes = $station->passing_routes()))
-        {
-            $vehicles = Model_Remote::vehicles($passing_routes);
-            $view->set('vehicles_enroute', count($vehicles));
-        }
+        //TODO: somehow find what are the routes passing thru station from the new api
+//        if(empty($forecast) && ($passing_routes = $station->passing_routes()))
+//        {
+//            $vehicles = Model_Remote::vehicles($passing_routes);
+//            $view->set('vehicles_enroute', count($vehicles));
+//        }
 
         $this->response
             ->nocache()
@@ -108,9 +109,7 @@ class Controller_Main extends Controller
             ->html(
                 View::factory('vehicle_forecast')
                 ->set('forecast',
-                    Model_Remote::vehicle_forecast(
-                        Arr::extract($this->request->query(), array('id','type'))
-                    )
+                    Model_Remote::vehicle_forecast($this->request->query())
                 )
                 ->set('title', $this->request->query('title'))
             )
@@ -120,20 +119,18 @@ class Controller_Main extends Controller
     public function action_about()
     {
         $view = View::factory('about');
-        $rtypes = Model_Remote::route_types();
 
-        $vcounts = array_combine(
-            Arr::opluck($rtypes,'typeShName'),
-            array_fill(0,count($rtypes),0)
-        );
-
-        foreach(Model_Remote::vehicles() as $vehicle){
-            $vcounts[$vehicle->rtype]++;
+        $vcounts = array();
+        $available_vehicles = Model_Remote::vehicles();
+        foreach($available_vehicles as $vehicle){
+            $vcount = Arr::get($vcounts, $vehicle->rtype, 0);
+            Arr::set_path($vcounts, $vehicle->rtype, ++$vcount);
         }
 
         $view
             ->set('vcounts', $vcounts)
-            ->set('rtypes', $rtypes);
+            ->set('rtypes', array_keys($vcounts));
+
         $this->response->html($view);
     }
 } // End Welcome

@@ -24,11 +24,11 @@
             <h3>Машины на линиях</h3>
             <?php
                 /**
-                 * @var Model_Route_Type[] $rtypes
+                 * @var array $rtypes
                  * @var array $vcounts
                  */
                 foreach($rtypes as $rtype){
-                    printf('<p>%s: %d шт.</p>',$rtype->typeName, $vcounts[$rtype->typeShName]);
+                    printf('<p>%s: %d шт.</p>',$rtype, $vcounts[$rtype]);
                 }
             ?>
         </div>

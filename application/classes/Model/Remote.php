@@ -60,31 +60,15 @@ class Model_Remote extends Model
     }
 
     /**
-     * @return Model_Route_Type[]
-     */
-    public static function route_types(){
-        return self::json_request('searchAllRouteTypes.php');
-    }
-
-    /**
      * @return Model_Route[]
      */
     public static function routes()
     {
-        $data = self::json_request('searchAllRoutes.php');
+        $data = self::json_request('getRoutes.php');
         $routes = array();
-        foreach($data as $type=>$csv)
+        foreach($data as $route)
         {
-            $csv = explode('@ROUTE=',$csv);
-            array_shift($csv);
-
-            foreach($csv as $route)
-            {
-                $route_info = array_combine(array(
-                    'formal_name','full_name','name','start','finish','type','id1','id2'
-                ),str_getcsv($route,';'));
-                $routes[] = Model_Route::factory($route_info);
-            }
+            $routes[] = Model_Route::factory((array) $route);
         }
         return $routes;
     }
@@ -102,66 +86,56 @@ class Model_Remote extends Model
             if(current($routes) instanceof Model_Route){
                 $ids = array();
                 foreach($routes as $route){
-                    $ids[] = sprintf('%d;0',$route->id1,$route->id2);
+                    /** @var Model_Route $route */
+                    $ids[] = sprintf('%d-0', $route->id);
                 }
                 $routes = $ids; unset($ids);
             }
-            $routes = implode('|',$routes);
+            $routes = implode(',',$routes);
         }
 
-        $xml_vehicles = self::xml_request('getRoutesVehicles.php',array('ids'=>$routes));
+        $params = array(
+            'rids'=>$routes,
+            'lat0'=>0, 'lng0'=>0, 'lat1'=>90, 'lng1'=>180, 'curk'=>0
+        );
+        $json_vehicles = self::json_request('getVehiclesMarkers.php', $params)->anims;
 
         $forecast = array();
-        foreach($xml_vehicles->children() as $vehicle){
-            $vehicle= (array)$vehicle;
-            $forecast[] = Model_Vehicle::factory($vehicle['@attributes']);
+        foreach($json_vehicles as $vehicle){
+            $forecast[] = Model_Vehicle::factory($vehicle);
         }
         return $forecast;
     }
 
     /**
-     * @param $route_id
-     * @param $heading
      * @return Model_Station[]
      */
-    public static function stations($route_id,$heading)
-    {
-        $stations = self::xml_request('getRouteStations.php',array(
-            'type'=>0,
-            'id1'=>(int)$route_id,
-            'id2'=>(int)$route_id
-        ));
+    public static function stations() {
+        $json_stations = self::json_request('getStations.php');
 
-        $data = array();
-        foreach($stations->children() as $station){
-            $station = (array)$station;
-            /** @var $station Model_Station */
-            $station = Model_Station::factory($station['@attributes']);
-            $station->heading = $heading;
-            $data[(string)$station->id] = $station;
-            unset($station);
-        }
-        unset($stations);
-        array_pop($data); //removing last stop, because this is the first one of the opposite direction
-        return $data;
+        return array_map(function($json_station){
+            return Model_Station::factory((array)$json_station);
+        }, $json_stations);
     }
 
+    /**
+     * @param array $query
+     * @return Model_Forecast_Vehicle[]
+     */
     public static function station_forecast($query = array()){
-        $xml_vehicles = self::xml_request('getStationForecasts.php',$query);
+        $json_vehicles = self::json_request('getStationForecasts.php', $query);
         $forecast = array();
-        foreach($xml_vehicles->children() as $vehicle){
-            $vehicle= (array)$vehicle;
-            $forecast[] = Model_Forecast_Vehicle::factory($vehicle['@attributes']);
+        foreach($json_vehicles as $vehicle){
+            $forecast[] = Model_Forecast_Vehicle::factory($vehicle);
         }
         return $forecast;
     }
 
     public static function vehicle_forecast($query = array()){
-        $xml_stations = self::xml_request('getVehicleForecasts.php',$query);
+        $json_stations = self::json_request('getVehicleForecasts.php',$query);
         $forecast = array();
-        foreach($xml_stations->children() as $stations_forecast){
-            $stations_forecast = (array)$stations_forecast;
-            $forecast[] = Model_Forecast_Station::factory($stations_forecast['@attributes']);
+        foreach($json_stations as $stations_forecast){
+            $forecast[] = Model_Forecast_Station::factory($stations_forecast);
         }
         return $forecast;
     }

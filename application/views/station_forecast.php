@@ -11,27 +11,28 @@
     </div>
     <div data-role="content">
         <ul class="forecast" data-role="listview" data-inset="true">
-            <?
+            <?php
                 foreach($forecast as $item)
                 {
                     printf('<li>
-                                <a href="/vehicle_forecast?id=%s&type=%d&title=%s">
+                                <a href="/vehicle_forecast?vid=%s&type=%d&title=%s">
                                     <img src="img/%s.png" alt="%s" class="ui-li-icon">
                                     <span class="ui-li-route">%s</span>
                                     &rarr;%s<span class="ui-li-count">%s</span>
                                 </a>
                             </li>',
-                        $item->obj_id, $station->type, $item->route_num,
-                        $item->route_type, $item->route_num, $item->route_num, $item->where_go,
-                        $item->arrive_time()
+                        $item->vehid, $station->type, $item->get_shortname(),
+                        $item->rtype, $item->get_shortname(),
+                        $item->rnum,
+                        $item->where, $item->arrive_time()
                     );
                 }
 
                 if($vehicles_enroute === 0){ ?>
                 <div class="ui-body ui-body-e">
-                    Нет проходящего транспорта на маршрутах. <!--a href="tel:000000">Позвонить в такси ?</a-->
+                    Нет проходящего транспорта на маршрутах. <!--a href="tel:000000">Вызвать такси ?</a-->
                 </div>
-            <?  }
+            <?php  }
             ?>
         </ul>
     </div>

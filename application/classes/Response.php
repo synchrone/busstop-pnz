@@ -3,6 +3,9 @@
 class Response extends Kohana_Response
 {
 
+    /**
+     * @return $this
+     */
     public function nocache()
     {
         return $this
